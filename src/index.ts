@@ -137,7 +137,7 @@ app.delete('/bloggers/:id', (req:Request, res:Response) => {
 
 app.post('/bloggers', (req:Request, res:Response) => {
     const {name, youtubeUrl} = req.body
-    if(!name || name.length>15) {
+    if(!name || !name.match('[Aa-zZ]+') || name.length>15) {
         errMess.errorsMessages.push({ "message" : "Input error", "field": "name" })
     }
     if (!youtubeUrl || youtubeUrl.length>100 || !youtubeUrl.match('^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$')) {
@@ -145,6 +145,7 @@ app.post('/bloggers', (req:Request, res:Response) => {
     }
     if(errMess.errorsMessages.length>0) {
         res.status(400).json(errMess)
+        res.end()
         errMess.errorsMessages = []
         return
     }
@@ -169,23 +170,22 @@ app.put('/bloggers/:id', (req:Request, res:Response) => {
         res.end()
         return
     }
-    if(name===null || name.length>15) {
-        res.status(400).json({ "errorsMessages": [{ "message": "Input error", "field": "name" }] })
+    if(!name || !name.match('[Aa-zZ]+') || name.length>15) {
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "name" })
+    }
+    if (!youtubeUrl || youtubeUrl.length>100 || !youtubeUrl.match('^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$')) {
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "youtubeUrl" })
+    }
+    if(errMess.errorsMessages.length>0) {
+        res.status(400).json(errMess)
         res.end()
+        errMess.errorsMessages = []
         return
     }
-    else if (youtubeUrl===null || youtubeUrl.length>100 || !youtubeUrl.match('^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$')) {
-        res.status(400).json({ "errorsMessages": [{ "message": "Input error", "field": "youtubeUrl" }] })
-        res.end()
-        return
-    } else {
 
-        bloggers[foundIndex].name = req.body.name
-        bloggers[foundIndex].youtubeUrl = req.body.youtubeUrl
-        res.status(204)
-        res.end()
-        return
-    }
+    bloggers[foundIndex].name = req.body.name
+    bloggers[foundIndex].youtubeUrl = req.body.youtubeUrl
+    res.status(204)
     res.end()
 
 
