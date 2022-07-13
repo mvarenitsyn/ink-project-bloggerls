@@ -47,7 +47,7 @@ app.get('/posts/:id', (req:Request, res:Response) => {
         res.end()
         return
     }
-    const foundIndex = bloggers.findIndex(item => item.id === +req.params.id)
+    const foundIndex = posts.findIndex(item => item.id === +req.params.id)
     if(foundIndex<0) {
         res.status(404)
         res.end()
@@ -78,21 +78,23 @@ app.post('/posts', (req:Request, res:Response) => {
     if(errMess.errorsMessages.length>0) {
         res.status(400).json(errMess)
         res.end()
+        errMess.errorsMessages = []
         return
     }
 
-        const newPost = {
-            "id": +(new Date()),
-            "title": title,
-            "shortDescription": shortDescription,
-            "content": content,
-            "bloggerId": bloggerId,
-            "bloggerName": bloggers[bloggerIndex].name
+    const newPost = {
+        "id": +(new Date()),
+        "title": title,
+        "shortDescription": shortDescription,
+        "content": content,
+        "bloggerId": bloggerId,
+        "bloggerName": bloggers[bloggerIndex].name
 
-        }
-        posts.push(newPost)
-        res.status(201).send(newPost)
-        res.end()
+    }
+
+    posts.push(newPost)
+    res.status(201).send(newPost)
+    res.end()
 
 
 })
