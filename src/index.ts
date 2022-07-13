@@ -62,13 +62,13 @@ app.post('/posts', (req:Request, res:Response) => {
     const {title, shortDescription, content, bloggerId} = req.body
     const bloggerIndex = bloggers.findIndex(item => item.id === bloggerId)
 
-    if(!title || title.length>30) {
+    if(!title || title.length>30 || !title.match('[Aa-zZ]+')) {
         errMess.errorsMessages.push({ "message" : "Input error", "field": "title" })
     }
-    if (!shortDescription || shortDescription.length>100) {
+    if (!shortDescription || shortDescription.length>100 || !shortDescription.match('[Aa-zZ]+')) {
         errMess.errorsMessages.push({ "message" : "Input error", "field": "shortDescription" })
     }
-    if (!content || content.length>1000) {
+    if (!content || content.length>1000 || !content.match('[Aa-zZ]+')) {
         errMess.errorsMessages.push({ "message" : "Input error", "field": "content" })
     }
     if (bloggerIndex<0) {
@@ -94,6 +94,57 @@ app.post('/posts', (req:Request, res:Response) => {
 
     posts.push(newPost)
     res.status(201).send(newPost)
+    res.end()
+
+
+})
+
+app.put('/posts', (req:Request, res:Response) => {
+    const {title, shortDescription, content, bloggerId} = req.body
+    const bloggerIndex = bloggers.findIndex(item => item.id === bloggerId)
+    const postIndex = bloggers.findIndex(item => item.id === +req.params.id)
+
+    if(postIndex<0) {
+        res.status(404)
+        res.end()
+        return
+    }
+
+    if(!title || title.length>30 || !title.match('[Aa-zZ]+')) {
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "title" })
+    }
+    if (!shortDescription || shortDescription.length>100 || !shortDescription.match('[Aa-zZ]+')) {
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "shortDescription" })
+    }
+    if (!content || content.length>1000 || !content.match('[Aa-zZ]+')) {
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "content" })
+    }
+    if (bloggerIndex<0) {
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "bloggerIndex" })
+    }
+
+    if(errMess.errorsMessages.length>0) {
+        res.status(400).json(errMess)
+        res.end()
+        errMess.errorsMessages = []
+        return
+    }
+
+    const newPost = {
+        "id": +(new Date()),
+        "title": title,
+        "shortDescription": shortDescription,
+        "content": content,
+        "bloggerId": bloggerId,
+        "bloggerName": bloggers[bloggerIndex].name
+
+    }
+    posts[postIndex].title = title
+    posts[postIndex].shortDescription = shortDescription
+    posts[postIndex].content = content
+    posts[postIndex].bloggerId = bloggerId
+
+    res.status(204)
     res.end()
 
 
