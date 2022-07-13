@@ -72,7 +72,7 @@ app.post('/posts', (req:Request, res:Response) => {
         errMess.errorsMessages.push({ "message" : "Input error", "field": "content" })
     }
     if (bloggerIndex<0) {
-        errMess.errorsMessages.push({ "message" : "Input error", "field": "bloggerIndex" })
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "bloggerId" })
     }
 
     if(errMess.errorsMessages.length>0) {
@@ -120,7 +120,7 @@ app.put('/posts/:id', (req:Request, res:Response) => {
         errMess.errorsMessages.push({ "message" : "Input error", "field": "content" })
     }
     if (bloggerIndex<0) {
-        errMess.errorsMessages.push({ "message" : "Input error", "field": "bloggerIndex" })
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "bloggerId" })
     }
 
     if(errMess.errorsMessages.length>0) {
