@@ -99,7 +99,7 @@ app.post('/posts', (req:Request, res:Response) => {
 
 })
 
-app.put('/posts', (req:Request, res:Response) => {
+app.put('/posts/:id', (req:Request, res:Response) => {
     const {title, shortDescription, content, bloggerId} = req.body
     const bloggerIndex = bloggers.findIndex(item => item.id === bloggerId)
     const postIndex = bloggers.findIndex(item => item.id === +req.params.id)
