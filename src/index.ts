@@ -30,6 +30,79 @@ const posts = [
     }
 ]
 
+const errMess = {
+    "errorsMessages":[]
+}
+
+//Posts API
+
+app.get('/posts', (req:Request, res:Response) => {
+    res.status(200).send(posts)
+    res.end()
+})
+
+app.get('/posts/:id', (req:Request, res:Response) => {
+    if(req.params.id.match(/\D/g)) {
+        res.status(400)
+        res.end()
+        return
+    }
+    const foundIndex = bloggers.findIndex(item => item.id === +req.params.id)
+    if(foundIndex<0) {
+        res.status(404)
+        res.end()
+        return
+    }
+
+    res.status(200).send(posts[foundIndex])
+    res.end()
+})
+
+app.post('/posts', (req:Request, res:Response) => {
+    const {title, shortDescription, content, bloggerId} = req.body
+
+    const bloggerIndex = bloggers.findIndex(item => item.id === bloggerId)
+
+    if(!title || title.length>30) {
+        res.status(400).json({ "errorsMessages": [{ "message": "Input error", "field": "title" }] })
+        res.end()
+        return
+    }
+    if (!shortDescription || shortDescription.length>100) {
+        res.status(400).json({ "errorsMessages": [{ "message": "Input error", "field": "shortDescription" }] })
+        res.end()
+        return
+    }
+    if (!content || content.length>1000) {
+        res.status(400).json({ "errorsMessages": [{ "message": "Input error", "field": "content" }] })
+        res.end()
+        return
+    }
+    if (bloggerIndex<0) {
+        res.status(400).json({ "errorsMessages": [{ "message": "Input error", "field": "bloggerId" }] })
+        res.end()
+        return
+    }
+
+        const newPost = {
+            "id": +(new Date()),
+            "title": title,
+            "shortDescription": shortDescription,
+            "content": content,
+            "bloggerId": bloggerId,
+            "bloggerName": bloggers[bloggerIndex].name
+
+        }
+        posts.push(newPost)
+        res.status(201).send(newPost)
+        res.end()
+
+
+})
+
+
+
+//Bloggers API
 app.get('/bloggers', (req:Request, res:Response) => {
     res.status(200).send(bloggers)
     res.end()
@@ -47,6 +120,8 @@ app.get('/bloggers/:id', (req:Request, res:Response) => {
     }
 
 })
+
+
 
 app.delete('/bloggers/:id', (req:Request, res:Response) => {
     const foundIndex = bloggers.findIndex(item => item.id === +req.params.id)
@@ -122,3 +197,4 @@ app.put('/bloggers/:id', (req:Request, res:Response) => {
 app.listen(port, () => {
     console.log("Server is up and running or port: "+port)
 })
+
