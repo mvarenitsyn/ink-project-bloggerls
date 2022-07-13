@@ -137,26 +137,25 @@ app.delete('/bloggers/:id', (req:Request, res:Response) => {
 
 app.post('/bloggers', (req:Request, res:Response) => {
     const {name, youtubeUrl} = req.body
-    if(name===null || name.length>15) {
-        res.status(400).json({ "errorsMessages": [{ "message": "Input error", "field": "name" }] })
-        res.end()
+    if(!name || name.length>15) {
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "name" })
+    }
+    if (!youtubeUrl || youtubeUrl.length>100 || !youtubeUrl.match('^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$')) {
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "youtubeUrl" })
+    }
+    if(errMess.errorsMessages.length>0) {
+        res.status(400).json(errMess)
+        errMess.errorsMessages = []
         return
     }
-    else if (youtubeUrl===null || youtubeUrl.length>100 || !youtubeUrl.match('^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$')) {
-        res.status(400).json({ "errorsMessages": [{ "message": "Input error", "field": "youtubeUrl" }] })
-        res.end()
-        return
-    } else {
-        const newBlogger = {
-            "id": +(new Date()),
-            "name": name,
-            "youtubeUrl": youtubeUrl
-        }
-        bloggers.push(newBlogger)
-        res.status(201).send(newBlogger)
-        res.end()
-        return
+    const newBlogger = {
+        "id": +(new Date()),
+        "name": name,
+        "youtubeUrl": youtubeUrl
     }
+
+    bloggers.push(newBlogger)
+    res.status(201).send(newBlogger)
     res.end()
 
 
