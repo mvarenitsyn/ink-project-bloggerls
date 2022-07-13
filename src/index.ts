@@ -76,7 +76,7 @@ app.post('/posts', (req:Request, res:Response) => {
     }
 
     if(errMess.errorsMessages.length>0) {
-        res.status(400).send(errMess)
+        res.status(400).json(errMess)
         res.end()
         return
     }
