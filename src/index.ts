@@ -30,8 +30,8 @@ const posts = [
     }
 ]
 
-const errMess = {
-    "errorsMessages":[]
+const errMess:any = {
+    "errorsMessages": []
 }
 
 //Posts API
@@ -60,26 +60,23 @@ app.get('/posts/:id', (req:Request, res:Response) => {
 
 app.post('/posts', (req:Request, res:Response) => {
     const {title, shortDescription, content, bloggerId} = req.body
-
     const bloggerIndex = bloggers.findIndex(item => item.id === bloggerId)
 
     if(!title || title.length>30) {
-        res.status(400).json({ "errorsMessages": [{ "message": "Input error", "field": "title" }] })
-        res.end()
-        return
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "title" })
     }
     if (!shortDescription || shortDescription.length>100) {
-        res.status(400).json({ "errorsMessages": [{ "message": "Input error", "field": "shortDescription" }] })
-        res.end()
-        return
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "shortDescription" })
     }
     if (!content || content.length>1000) {
-        res.status(400).json({ "errorsMessages": [{ "message": "Input error", "field": "content" }] })
-        res.end()
-        return
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "content" })
     }
     if (bloggerIndex<0) {
-        res.status(400).json({ "errorsMessages": [{ "message": "Input error", "field": "bloggerId" }] })
+        errMess.errorsMessages.push({ "message" : "Input error", "field": "bloggerIndex" })
+    }
+
+    if(errMess.errorsMessages.length>0) {
+        res.status(400).send(errMess)
         res.end()
         return
     }
