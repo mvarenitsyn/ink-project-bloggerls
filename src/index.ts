@@ -102,7 +102,7 @@ app.post('/posts', (req:Request, res:Response) => {
 app.put('/posts/:id', (req:Request, res:Response) => {
     const {title, shortDescription, content, bloggerId} = req.body
     const bloggerIndex = bloggers.findIndex(item => item.id === bloggerId)
-    const postIndex = bloggers.findIndex(item => item.id === +req.params.id)
+    const postIndex = posts.findIndex(item => item.id === +req.params.id)
 
     if(postIndex<0) {
         res.status(404)
@@ -147,6 +147,19 @@ app.put('/posts/:id', (req:Request, res:Response) => {
     res.status(204)
     res.end()
 
+
+})
+
+app.delete('/posts/:id', (req:Request, res:Response) => {
+    const foundIndex = posts.findIndex(item => item.id === +req.params.id)
+    if(foundIndex>=0) {
+        posts.splice(foundIndex,1)
+        res.status(204)
+        res.end()
+    } else {
+        res.status(404)
+        res.end()
+    }
 
 })
 
