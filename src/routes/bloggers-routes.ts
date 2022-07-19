@@ -41,7 +41,7 @@ bloggersRouter.post('/',isAuthorized,
         const {name, youtubeUrl} = req.body
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            res.status(400).json({errorMessages: errorsAdapt(errors.array({onlyFirstError: true}))})
+            res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
             res.end()
             return
         }
@@ -59,7 +59,7 @@ bloggersRouter.put('/:id', isAuthorized, isValidBlogger,
     const {name, youtubeUrl} = req.body
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-        res.status(400).send({"errorMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
+        res.status(400).send({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
         res.end()
         return
     }

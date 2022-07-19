@@ -3,11 +3,9 @@ type ErrorType = {
 }
 
 export const errorsAdapt = (errors: object[]) => {
-    const adaptedErrors: object[] = []
+    const adaptedErrors: ErrorType[] = []
     errors.map((el:any) => {
-        const msg:string = el.msg.toString()
-        const param:string = el.param.toString()
-        adaptedErrors.push({"message": msg, "field": param})
+        adaptedErrors.push({message: el.msg.toString(), field: el.param.toString()})
     })
     if (adaptedErrors.length > 0) {
         return adaptedErrors
