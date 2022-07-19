@@ -35,8 +35,8 @@ bloggersRouter.delete('/:id', isAuthorized, isValidBlogger, (req: Request, res: 
 })
 
 bloggersRouter.post('/',isAuthorized,
-    body('name').trim().exists().isLength({min: 1, max: 15}).isString(),
     body('youtubeUrl').exists().isLength({max: 100}).isURL(),
+    body('name').trim().exists().isLength({min: 1, max: 15}).isString(),
     (req: Request, res: Response) => {
         const {name, youtubeUrl} = req.body
         const errors = validationResult(req)
@@ -53,8 +53,8 @@ bloggersRouter.post('/',isAuthorized,
     })
 
 bloggersRouter.put('/:id', isAuthorized, isValidBlogger,
-    body('name').trim().exists().isLength({min: 1, max: 15}).isString(),
     body('youtubeUrl').exists().isLength({max: 100}).isURL(),
+    body('name').trim().exists().isLength({min: 1, max: 15}).isString(),
     (req: Request, res: Response) => {
     const {name, youtubeUrl} = req.body
     const errors = validationResult(req)
