@@ -2,6 +2,9 @@ import {NextFunction, Request, Response, Router} from "express";
 
 import { postsRepository } from "../repositories/posts";
 import { bloggersRepository } from "../repositories/bloggers";
+import {body, validationResult} from 'express-validator'
+import {isAuthorized, isValidBlogger, isValidPost} from "../middleware/general";
+import {errorsAdapt} from "../utils";
 
 export const postsRouter = Router({})
 const errMess:any = {
@@ -12,80 +15,55 @@ postsRouter.get('/', (req:Request, res:Response) => {
     res.end()
 })
 
-postsRouter.get('/:id', (req:Request, res:Response) => {
-    if(req.params.id.match(/\D/g)) {
-        res.status(400)
-        res.end()
-        return
-    }
-    const post = postsRepository.getPostById(+req.params.id)
-    if(!post) {
-        res.status(404)
+postsRouter.get('/:id', isValidPost, (req:Request, res:Response) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
         res.end()
         return
     }
 
-    res.status(200).send(post)
+    res.status(200).send(postsRepository.getPostById(+req.params.id))
     res.end()
 })
 
-postsRouter.post('/', (req:Request, res:Response) => {
+postsRouter.post('/', isAuthorized,
+    body('title').exists().isLength({max:30}),
+    body('shortDescription').exists().isLength({max:100}),
+    body('content').exists().isLength({max:1000}),
+    body('bloggerId').exists().isInt(),
+    (req:Request, res:Response) => {
     const {title, shortDescription, content, bloggerId} = req.body
-    const blogger = bloggersRepository.getBloggerById(bloggerId)
-
-    if(!title || title.length>30 || !title.match('[Aa-zZ]+')) {
-        errMess.errorsMessages.push({ "message" : "Input error", "field": "title" })
-    }
-    if (!shortDescription || shortDescription.length>100 || !shortDescription.match('[Aa-zZ]+')) {
-        errMess.errorsMessages.push({ "message" : "Input error", "field": "shortDescription" })
-    }
-    if (!content || content.length>1000 || !content.match('[Aa-zZ]+')) {
-        errMess.errorsMessages.push({ "message" : "Input error", "field": "content" })
-    }
-
-
-    if (!blogger) {
-        errMess.errorsMessages.push({ "message" : "Input error", "field": "bloggerId" })
-    }
-
-    if(errMess.errorsMessages.length>0) {
-        res.status(400).json(errMess)
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
         res.end()
-        errMess.errorsMessages = []
         return
     }
-
-    blogger && res.status(201).send(postsRepository.createPost(title, shortDescription, content, bloggerId, blogger.name))
-    res.end()
+    const blogger = bloggersRepository.getBloggerById(bloggerId)
+    if(blogger) {
+        res.status(201).send(postsRepository.createPost(title, shortDescription, content, bloggerId,blogger.name))
+        res.end()
+    }
 
 
 })
 
-postsRouter.put('/:id', (req:Request, res:Response) => {
+postsRouter.put('/:id', isAuthorized, isValidPost,
+    body('title').exists().isLength({max:30}),
+    body('shortDescription').exists().isLength({max:100}),
+    body('content').exists().isLength({max:1000}),
+    body('bloggerId').exists().isInt(),
+    (req:Request, res:Response) => {
     const {title, shortDescription, content, bloggerId} = req.body
     const blogger = bloggersRepository.getBloggerById(bloggerId)
-    const post = postsRepository.getPostById(+req.params.id)
 
-    if(!post) {
-        res.status(404)
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
         res.end()
         return
     }
-
-    if(!title || title.length>30 || !title.match('[Aa-zZ]+')) {
-        errMess.errorsMessages.push({ "message" : "Input error", "field": "title" })
-    }
-    if (!shortDescription || shortDescription.length>100 || !shortDescription.match('[Aa-zZ]+')) {
-        errMess.errorsMessages.push({ "message" : "Input error", "field": "shortDescription" })
-    }
-    if (!content || content.length>1000 || !content.match('[Aa-zZ]+')) {
-        errMess.errorsMessages.push({ "message" : "Input error", "field": "content" })
-    }
-    if (!blogger) {
-        errMess.errorsMessages.push({ "message" : "Input error", "field": "bloggerId" })
-    }
-
-
 
     blogger && postsRepository.updatePostById(+req.params.id, title, shortDescription, content, bloggerId)
     res.status(204)
@@ -94,7 +72,7 @@ postsRouter.put('/:id', (req:Request, res:Response) => {
 
 })
 
-postsRouter.delete('/:id', (req:Request, res:Response) => {
+postsRouter.delete('/:id', isAuthorized, isValidPost, (req:Request, res:Response) => {
     const post = postsRepository.getPostById(+req.params.id)
     if(post) {
         postsRepository.deletePostById(+req.params.id)

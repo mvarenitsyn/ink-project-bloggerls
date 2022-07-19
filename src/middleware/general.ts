@@ -1,12 +1,22 @@
 import {Request} from "express";
 import {NextFunction, Response} from "express/ts4.0";
 import { body, CustomValidator } from 'express-validator';
-import {bloggersDB} from "../db/db";
+import {bloggersDB, postsDB} from "../db/db";
 
 export const isValidBlogger = (req: Request, res: Response, next:NextFunction) => {
     const bloggerId = +req.params.id || null
 
     if(!bloggersDB.find((item:any) => item.id === bloggerId)) {
+        res.status(404)
+        res.end()
+        return
+    } else next()
+};
+
+export const isValidPost = (req: Request, res: Response, next:NextFunction) => {
+    const postId = +req.params.id || null
+
+    if(!postsDB.find((item:any) => item.id === postId)) {
         res.status(404)
         res.end()
         return
@@ -29,7 +39,7 @@ export const isAuthorized = (req: Request, res: Response, next:NextFunction) => 
         next()
     }
     else {
-        res.status(403)
+        res.status(401)
         res.end()
         return
 
