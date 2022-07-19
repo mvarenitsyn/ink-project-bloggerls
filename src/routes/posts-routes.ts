@@ -28,10 +28,10 @@ postsRouter.get('/:id', isValidPost, (req:Request, res:Response) => {
 })
 
 postsRouter.post('/', isAuthorized,
-    body('title').exists().trim().isLength({max:30}),
-    body('shortDescription').trim().exists().isLength({max:100}),
-    body('content').exists().trim().isLength({max:1000}),
-    body('bloggerId').exists().isInt(),
+    body('title').trim().notEmpty().isLength({max:30}),
+    body('shortDescription').trim().notEmpty().isLength({max:100}),
+    body('content').trim().notEmpty().isLength({max:1000}),
+    body('bloggerId').isInt(),
     (req:Request, res:Response) => {
     const {title, shortDescription, content, bloggerId} = req.body
     const errors = validationResult(req)
@@ -44,6 +44,7 @@ postsRouter.post('/', isAuthorized,
     if(blogger) {
         res.status(201).send(postsRepository.createPost(title, shortDescription, content, bloggerId,blogger.name))
         res.end()
+        return
     }
 
 
@@ -51,9 +52,9 @@ postsRouter.post('/', isAuthorized,
 
 postsRouter.put('/:id', isAuthorized, isValidPost,
     body('title').trim().notEmpty().isLength({max:30}),
-    body('shortDescription').exists().trim().isLength({max:100}),
-    body('content').exists().trim().isLength({max:1000}),
-    body('bloggerId').exists().isInt(),
+    body('shortDescription').trim().notEmpty().isLength({max:100}),
+    body('content').trim().notEmpty().isLength({max:1000}),
+    body('bloggerId').isInt(),
     (req:Request, res:Response) => {
     const {title, shortDescription, content, bloggerId} = req.body
     const blogger = bloggersRepository.getBloggerById(bloggerId)
@@ -78,9 +79,11 @@ postsRouter.delete('/:id', isAuthorized, isValidPost, (req:Request, res:Response
         postsRepository.deletePostById(+req.params.id)
         res.status(204)
         res.end()
+        return
     } else {
         res.status(404)
         res.end()
+        return
     }
 
 })
