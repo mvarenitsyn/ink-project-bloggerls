@@ -54,7 +54,7 @@ postsRouter.put('/:id', isAuthorized, isValidPost,
     body('title').trim().notEmpty().isLength({max:30}),
     body('shortDescription').trim().notEmpty().isLength({max:100}),
     body('content').trim().notEmpty().isLength({max:1000}),
-    body('bloggerId').isInt(),
+    body('bloggerId').custom((value, { req }) => !!bloggersRepository.getBloggerById(value)),
     (req:Request, res:Response) => {
     const {title, shortDescription, content, bloggerId} = req.body
     const blogger = bloggersRepository.getBloggerById(bloggerId)
