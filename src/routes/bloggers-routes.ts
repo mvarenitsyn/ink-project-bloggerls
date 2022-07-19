@@ -5,7 +5,7 @@ import {bloggersRepository} from "../repositories/bloggers";
 
 import {errorsAdapt} from "../utils";
 import {isAuthorized, isValidBlogger} from "../middleware/general";
-
+//
 
 export const bloggersRouter = Router({})
 
