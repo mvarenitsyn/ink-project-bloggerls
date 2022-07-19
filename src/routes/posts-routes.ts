@@ -28,9 +28,9 @@ postsRouter.get('/:id', isValidPost, (req:Request, res:Response) => {
 })
 
 postsRouter.post('/', isAuthorized,
-    body('title').exists().isLength({max:30}),
-    body('shortDescription').exists().isLength({max:100}),
-    body('content').exists().isLength({max:1000}),
+    body('title').exists().trim().isLength({max:30}),
+    body('shortDescription').trim().exists().isLength({max:100}),
+    body('content').exists().trim().isLength({max:1000}),
     body('bloggerId').exists().isInt(),
     (req:Request, res:Response) => {
     const {title, shortDescription, content, bloggerId} = req.body
@@ -50,9 +50,9 @@ postsRouter.post('/', isAuthorized,
 })
 
 postsRouter.put('/:id', isAuthorized, isValidPost,
-    body('title').exists().isLength({max:30}),
-    body('shortDescription').exists().isLength({max:100}),
-    body('content').exists().isLength({max:1000}),
+    body('title').exists().trim().isLength({max:30}),
+    body('shortDescription').exists().trim().isLength({max:100}),
+    body('content').exists().trim().isLength({max:1000}),
     body('bloggerId').exists().isInt(),
     (req:Request, res:Response) => {
     const {title, shortDescription, content, bloggerId} = req.body

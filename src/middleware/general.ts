@@ -35,7 +35,9 @@ export const notBlocked = (req: Request, res: Response, next:NextFunction) => {
 }
 
 export const isAuthorized = (req: Request, res: Response, next:NextFunction) => {
-    if (req.headers.authorization && req.headers.authorization?.split(" ")[1].toString() === 'YWRtaW46cXdlcnR5') {
+    const authorized:boolean = req.headers.authorization?.split(" ")[1].toString() === 'YWRtaW46cXdlcnR5'
+    const authType:string = req.headers.authorization?.split(" ")[0].toString() || 'no auth'
+    if (req.headers.authorization && authType==='Basic' && authorized === true) {
         next()
     }
     else {
