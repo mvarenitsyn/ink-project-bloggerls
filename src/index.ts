@@ -13,7 +13,7 @@ const app =  express()
 const port = process.env.PORT || 3003
 app.use(cors())
 app.use(bodyParser({extended: true}))
-app.use('/lesson_01/api/videos', videoRouter)
+app.use('/videos', videoRouter)
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 

@@ -1,8 +1,8 @@
-import {NextFunction, Request, Response, Router} from "express";
-import {param, body, validationResult} from 'express-validator'
+import {Request, Response, Router} from "express";
+import {body, validationResult} from 'express-validator'
 
 import {bloggersRepository} from "../repositories/bloggers";
-import {postsRepository} from "../repositories/posts";
+
 import {errorsAdapt} from "../utils";
 import {isAuthorized, isValidBlogger} from "../middleware/general";
 
@@ -26,7 +26,7 @@ bloggersRouter.get('/:id', isValidBlogger, (req: Request, res: Response) => {
 })
 
 
-bloggersRouter.delete('/:id', isValidBlogger, (req: Request, res: Response) => {
+bloggersRouter.delete('/:id', isAuthorized, isValidBlogger, (req: Request, res: Response) => {
     bloggersRepository.deleteBloggerById(+req.params.id)
     res.status(204)
     res.end()
@@ -52,7 +52,7 @@ bloggersRouter.post('/',isAuthorized,
 
     })
 
-bloggersRouter.put('/:id', isValidBlogger,
+bloggersRouter.put('/:id', isAuthorized, isValidBlogger,
     body('name').trim().exists().isLength({min: 1, max: 15}).isString(),
     body('youtubeUrl').exists().isLength({max: 100}).isURL(),
     (req: Request, res: Response) => {
