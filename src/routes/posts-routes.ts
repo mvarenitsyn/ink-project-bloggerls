@@ -50,7 +50,7 @@ postsRouter.post('/', isAuthorized,
 })
 
 postsRouter.put('/:id', isAuthorized, isValidPost,
-    body('title').exists().trim().isLength({max:30}),
+    body('title').trim().notEmpty().isLength({max:30}),
     body('shortDescription').exists().trim().isLength({max:100}),
     body('content').exists().trim().isLength({max:1000}),
     body('bloggerId').exists().isInt(),
