@@ -82,7 +82,11 @@ bloggersRouter.put('/:id', isAuthorized, isValidBlogger,
 
 bloggersRouter.get('/:bloggerId/posts', isValidBlogger, param('bloggerId').isInt(),
     query('PageNumber').isInt().optional({checkFalsy: true}),
-    query('PageSize').isInt().optional({checkFalsy: true}), async (req: Request, res: Response) => {
+    query('PageSize').isInt().optional({checkFalsy: true}),
+    body('title').trim().notEmpty().isLength({max: 30}),
+    body('shortDescription').trim().notEmpty().isLength({max: 100}),
+    body('content').trim().notEmpty().isLength({max: 1000}),
+    async (req: Request, res: Response) => {
         const pageNumber = req.query.PageNumber ? Number(req.query.PageNumber) : undefined
         const pageSize = req.query.PageSize ? Number(req.query.PageSize) : undefined
 

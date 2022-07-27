@@ -10,7 +10,7 @@ export const bloggersRepo = {
         const bloggersData = await bloggersDBRepository.getBloggers(searchNameTerm, pageNumber, pageSize)
         const pagesCount = Math.round(bloggersData[0] / pageSize)
         return {
-            "pagesCount": pagesCount-1,
+            "pagesCount": pagesCount+1,
             "page": pageNumber,
             "pageSize": pageSize,
             "totalCount": bloggersData[0],
@@ -42,7 +42,7 @@ export const bloggersRepo = {
         const postsData = await postsRepo.getPosts(pageNumber, pageSize, bloggerId)
         const pagesCount = Math.round(postsData[0] / pageSize)
         return {
-            "pagesCount": pagesCount,
+            "pagesCount": pagesCount+1,
             "page": pageNumber,
             "pageSize": pageSize,
             "totalCount": postsData[0],
