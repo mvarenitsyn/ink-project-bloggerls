@@ -8,8 +8,7 @@ import {postsBusiness} from "../domain/PostsBusiness";
 export const isValidBlogger = async (req: Request, res: Response, next:NextFunction) => {
     const bloggerId = +req.params.bloggerId || +req.params.id ||  null
     if(bloggerId && !await bloggersDBRepository.getBloggerById(bloggerId)) {
-        res.status(404)
-        res.end()
+        res.sendStatus(404)
         return
     } else next()
 };
