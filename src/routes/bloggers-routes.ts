@@ -52,8 +52,7 @@ bloggersRouter.post('/', isAuthorized,
         const {name, youtubeUrl} = req.body
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            res.sendStatus(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
-            res.end()
+            res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
             return
         }
         const createdBlogger = await bloggersRepo.createBlogger(name, youtubeUrl)
