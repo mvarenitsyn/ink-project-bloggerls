@@ -9,9 +9,7 @@ import {bloggersRepo} from "../domain/BloggersBusiness";
 import {postsBusiness} from "../domain/PostsBusiness";
 
 export const postsRouter = Router({})
-const errMess: any = {
-    "errorsMessages": []
-}
+
 postsRouter.get('/',
     query('PageNumber').isInt().optional({checkFalsy: true}),
     query('PageSize').isInt().optional({checkFalsy: true}),
@@ -26,6 +24,7 @@ postsRouter.get('/',
         }
 
         res.status(200).send(await postsBusiness.getPosts(pageNumber, pageSize))
+        return
     })
 
 postsRouter.get('/:id', isValidPost, async (req: Request, res: Response) => {
@@ -93,8 +92,8 @@ postsRouter.delete('/:id', isAuthorized, isValidPost, async (req: Request, res: 
         res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
         return
     }
-
-    res.status(200).send(await postsBusiness.getPostById(+req.params.id))
+    await postsBusiness.deletePost(+req.params.id)
+    res.sendStatus(204)
     return
 
 })

@@ -11,7 +11,7 @@ export const postsBusiness = {
         const postsData = await postsRepo.getPosts(pageNumber, pageSize)
         const pagesCount = Math.floor(postsData[0] / pageSize)
         return {
-            "pagesCount": pagesCount+1,
+            "pagesCount": pagesCount,
             "page": pageNumber,
             "pageSize": pageSize,
             "totalCount": postsData[0],

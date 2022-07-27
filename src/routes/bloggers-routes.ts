@@ -81,13 +81,7 @@ bloggersRouter.put('/:id', isAuthorized, isValidBlogger,
 
     })
 
-bloggersRouter.get('/:bloggerId/posts', param('bloggerId').isInt()
-        .custom(async value => {
-            console.log(value)
-        if (!await bloggersRepo.getBloggerById(+value)) {
-            return Promise.reject();
-        }
-    }),
+bloggersRouter.get('/:bloggerId/posts', isValidBlogger, param('bloggerId').isInt(),
     query('PageNumber').isInt().optional({checkFalsy: true}),
     query('PageSize').isInt().optional({checkFalsy: true}), async (req: Request, res: Response) => {
         const pageNumber = req.query.PageNumber ? Number(req.query.PageNumber) : undefined
@@ -103,19 +97,14 @@ bloggersRouter.get('/:bloggerId/posts', param('bloggerId').isInt()
         return
     })
 
-bloggersRouter.post('/:bloggerId/posts', param('bloggerId').isInt()
-        .custom(async value => {
-            if (!await bloggersRepo.getBloggerById(+value)) {
-                return Promise.reject();
-            }
-        }), async (req: Request, res: Response) => {
+bloggersRouter.post('/:bloggerId/posts', isAuthorized, isValidBlogger, param('bloggerId').isInt(), async (req: Request, res: Response) => {
     const {title, shortDescription, content} = req.body
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
             return
         }
-        res.status(200).send(await bloggersRepo.createBloggerPost(title, shortDescription, content, +req.params.bloggerId))
+        res.status(201).send(await bloggersRepo.createBloggerPost(title, shortDescription, content, +req.params.bloggerId))
 
         return
     })
