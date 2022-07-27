@@ -8,7 +8,7 @@ export const bloggersRepo = {
 
     getBloggers: async (searchNameTerm: string | null = null, pageNumber: number = 1, pageSize: number = 10) => {
         const bloggersData = await bloggersDBRepository.getBloggers(searchNameTerm, pageNumber, pageSize)
-        const pagesCount = Math.round(bloggersData[0] / pageSize) + bloggersData[0] % pageSize > 0 ? 1 : 0
+        const pagesCount = Math.round(bloggersData[0] / pageSize) + (bloggersData[0] % pageSize > 0 ? 1 : 0)
         return {
             "pagesCount": pagesCount,
             "page": pageNumber,
@@ -40,7 +40,7 @@ export const bloggersRepo = {
 
     getBloggerPosts: async (pageNumber: number = 1, pageSize: number = 10, bloggerId: number) => {
         const postsData = await postsRepo.getPosts(pageNumber, pageSize, bloggerId)
-        const pagesCount = Math.round(postsData[0] / pageSize) + postsData[0] % pageSize > 0 ? 1 : 0
+        const pagesCount = Math.round(postsData[0] / pageSize) + (postsData[0] % pageSize > 0 ? 1 : 0)
         return {
             "pagesCount": pagesCount,
             "page": pageNumber,
