@@ -7,6 +7,7 @@ import {Request, Response} from "express";
 import {videoRouter} from "./routes/video-routes";
 import {bloggersRouter} from "./routes/bloggers-routes";
 import {postsRouter} from "./routes/posts-routes";
+import {connectDB} from "./db/data";
 
 
 const app =  express()
@@ -18,7 +19,13 @@ app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 
 
-app.listen(port, () => {
-    console.log("Server is up and running or port: "+port)
-})
+async function main()
+{
+    await connectDB()
+    app.listen(port, () => {
+        console.log("Server is up and running or port: " + port)
+    })
 
+}
+
+main()

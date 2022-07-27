@@ -4,11 +4,11 @@ import { bloggersDB } from "../db/db";
 export const bloggersRepository = {
     bloggers: bloggersDB,
 
-    getBloggers: () => {
+    getBloggers: async () => {
         return bloggersRepository.bloggers
     },
 
-    getBloggerById: (id: number) => {
+    getBloggerById: async (id: number) => {
         return bloggersRepository.bloggers.find(item => item.id === id)
     },
 
@@ -17,14 +17,13 @@ export const bloggersRepository = {
         return
     },
 
-    updateBloggerById: (id: number, name:string, youtubeUrl:string) => {
-        const blogger = bloggersRepository.getBloggerById(id)
+    updateBloggerById: async (id: number, name: string, youtubeUrl: string) => {
+        const blogger = await bloggersRepository.getBloggerById(id)
         if (blogger) {
             blogger.name = name
             blogger.youtubeUrl = youtubeUrl
 
-        }
-        else return undefined
+        } else return undefined
 
         return blogger
     },

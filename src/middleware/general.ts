@@ -2,21 +2,22 @@ import {Request} from "express";
 import {NextFunction, Response} from "express/ts4.0";
 import { body, CustomValidator } from 'express-validator';
 import {bloggersDB, postsDB} from "../db/db";
+import {bloggersDBRepository} from "../repositories/BloggersRepository";
+import {postsBusiness} from "../domain/PostsBusiness";
 
-export const isValidBlogger = (req: Request, res: Response, next:NextFunction) => {
-    const bloggerId = +req.params.id || null
-
-    if(!bloggersDB.find((item:any) => item.id === bloggerId)) {
+export const isValidBlogger = async (req: Request, res: Response, next:NextFunction) => {
+    const bloggerId = +req.params.id ||  null
+    if(bloggerId && !await bloggersDBRepository.getBloggerById(bloggerId)) {
         res.status(404)
         res.end()
         return
     } else next()
 };
 
-export const isValidPost = (req: Request, res: Response, next:NextFunction) => {
+export const isValidPost = async (req: Request, res: Response, next:NextFunction) => {
     const postId = +req.params.id || null
 
-    if(!postsDB.find((item:any) => item.id === postId)) {
+    if(postId && !await postsBusiness.getPostById(postId)) {
         res.status(404)
         res.end()
         return
@@ -37,7 +38,7 @@ export const notBlocked = (req: Request, res: Response, next:NextFunction) => {
 export const isAuthorized = (req: Request, res: Response, next:NextFunction) => {
     const authorized:boolean = req.headers.authorization?.split(" ")[1].toString() === 'YWRtaW46cXdlcnR5'
     const authType:string = req.headers.authorization?.split(" ")[0].toString() || 'no auth'
-    if (req.headers.authorization && authType==='Basic' && authorized === true) {
+    if (req.headers.authorization && authType==='Basic' && authorized) {
         next()
     }
     else {
