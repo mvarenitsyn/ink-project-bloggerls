@@ -9,7 +9,7 @@ import {bloggersRepo} from "./BloggersBusiness";
 export const postsBusiness = {
     getPosts: async (pageNumber: number = 1, pageSize: number = 10) => {
         const postsData = await postsRepo.getPosts(pageNumber, pageSize)
-        const pagesCount = postsData[0] < pageSize ? 1 : Math.round(postsData[0] / pageSize) + (postsData[0] % pageSize > 0 ? 1 : 0)
+        const pagesCount = Math.ceil(postsData[0] / pageSize)
         return {
             "pagesCount": pagesCount,
             "page": pageNumber,
