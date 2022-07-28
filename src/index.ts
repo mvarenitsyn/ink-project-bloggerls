@@ -1,4 +1,4 @@
-import express, {NextFunction} from 'express'
+import express from 'express'
 import cors from 'cors'
 import bodyParser from "body-parser";
 
@@ -8,6 +8,7 @@ import {videoRouter} from "./routes/video-routes";
 import {bloggersRouter} from "./routes/bloggers-routes";
 import {postsRouter} from "./routes/posts-routes";
 import {connectDB} from "./db/data";
+import {usersRouter} from "./routes/users-routes";
 
 
 const app =  express()
@@ -17,6 +18,7 @@ app.use(bodyParser({extended: true}))
 app.use('/videos', videoRouter)
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
+app.use('/users', usersRouter)
 
 
 async function main()

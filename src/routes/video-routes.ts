@@ -1,8 +1,8 @@
-import {NextFunction, Request, Response, Router} from "express";
-import { param, body, validationResult} from 'express-validator'
+import {Request, Response, Router} from "express";
+import { body, validationResult} from 'express-validator'
 
-import {videoRepository} from "../repositories/videos";
-import {notBlocked} from "../middleware/general";
+import {videoRepository} from "../archive/videos";
+
 import {errorsAdapt} from "../utils";
 
 

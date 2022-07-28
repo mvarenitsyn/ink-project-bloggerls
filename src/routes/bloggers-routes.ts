@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 import {body, query, param, validationResult} from 'express-validator'
 
-import {bloggersRepository} from "../repositories/bloggers";
+
 import {bloggersRepo} from "../domain/BloggersBusiness";
 import {errorsAdapt} from "../utils";
 import {isAuthorized, isValidBlogger} from "../middleware/general";
@@ -21,7 +21,6 @@ bloggersRouter.get('/',
             return
         }
         res.status(200).send(await bloggersRepo.getBloggers(searchTerm, pageNumber, pageSize))
-
         return
     })
 
@@ -69,8 +68,7 @@ bloggersRouter.put('/:id', isAuthorized, isValidBlogger,
             res.end()
             return
         }
-        const createdBlogger = await bloggersRepo.updateBloggerById(+req.params.id, name, youtubeUrl)
-
+        await bloggersRepo.updateBloggerById(+req.params.id, name, youtubeUrl)
         res.sendStatus(204)
         return
 

@@ -1,7 +1,7 @@
-import { bloggersDB } from "../db/db";
+
 import {bloggersCollection} from "../db/data";
-import {bloggerType} from "../db/types";
-import {postsRepo} from "./PostsRepository";
+import {bloggerDBType} from "../db/types";
+
 
 export const bloggersDBRepository = {
 
@@ -18,24 +18,20 @@ export const bloggersDBRepository = {
 
     getBloggerById: async (id: number) => {
         const filter = {id: id}
-        const blogger = await bloggersCollection.findOne(filter, {projection:{ _id: 0 }})
-        return blogger
+        return await bloggersCollection.findOne(filter, {projection:{ _id: 0 }})
     },
 
     deleteBloggerById: async (id: number) => {
         const filter = {id: id}
-        const blogger = await bloggersCollection.deleteOne(filter)
-        return
+        return await bloggersCollection.deleteOne(filter)
     },
 
     updateBloggerById: async (id: number, name: string, youtubeUrl: string) => {
         const filter = {id: id}
-        const blogger = await bloggersCollection.updateOne(filter, {$set:{ name: name, youtubeUrl: youtubeUrl }})
-
-        return
+        return await bloggersCollection.updateOne(filter, {$set:{ name: name, youtubeUrl: youtubeUrl }})
     },
 
-    createBlogger: async (blogger: bloggerType) => {
+    createBlogger: async (blogger: bloggerDBType) => {
         try {
             await bloggersCollection.insertOne(blogger)
             return {
