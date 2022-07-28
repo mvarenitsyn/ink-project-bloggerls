@@ -1,8 +1,4 @@
-import { postsDB } from "../db/db";
-import {postsCollection} from "../db/data";
-import {bloggersDBRepository} from "../repositories/BloggersRepository";
 import {postsRepo} from "../repositories/PostsRepository";
-import {postInterface} from "../db/types";
 import {ObjectId} from "mongodb";
 import {bloggersRepo} from "./BloggersBusiness";
 

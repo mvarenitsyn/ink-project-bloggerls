@@ -1,7 +1,5 @@
-import {NextFunction, Request, Response, Router} from "express";
+import {Request, Response, Router} from "express";
 
-import {postsRepository} from "../repositories/posts";
-import {bloggersRepository} from "../repositories/bloggers";
 import {body, query, validationResult} from 'express-validator'
 import {isAuthorized, isValidBlogger, isValidPost} from "../middleware/general";
 import {errorsAdapt} from "../utils";

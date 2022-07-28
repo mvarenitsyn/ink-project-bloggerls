@@ -5,10 +5,6 @@ import {bloggersRepository} from "../repositories/bloggers";
 import {bloggersRepo} from "../domain/BloggersBusiness";
 import {errorsAdapt} from "../utils";
 import {isAuthorized, isValidBlogger} from "../middleware/general";
-import {type} from "os";
-import {bloggersDBRepository} from "../repositories/BloggersRepository";
-import {postsBusiness} from "../domain/PostsBusiness";
-//
 
 export const bloggersRouter = Router({})
 

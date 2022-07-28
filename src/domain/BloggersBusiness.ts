@@ -1,7 +1,6 @@
 import {bloggersDBRepository} from "../repositories/BloggersRepository";
 import {ObjectId} from "mongodb";
 import {postsRepo} from "../repositories/PostsRepository";
-import {postsCollection} from "../db/data";
 
 export const bloggersRepo = {
 

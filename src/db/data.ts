@@ -1,7 +1,8 @@
 import {MongoClient} from 'mongodb'
 import {bloggerType, postInterface} from './types'
+import 'dotenv/config'
 
-const mongoUri = process.env.MONGO_URI || 'mongodb+srv://mern-app:blogger123@cluster0.vrb5bdm.mongodb.net' || 'mongodb://localhost:27017'
+const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017'
 
 const client = new MongoClient(mongoUri)
 const db = client.db("merndb")

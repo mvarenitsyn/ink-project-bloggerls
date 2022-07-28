@@ -1,7 +1,5 @@
 import {Request} from "express";
 import {NextFunction, Response} from "express/ts4.0";
-import { body, CustomValidator } from 'express-validator';
-import {bloggersDB, postsDB} from "../db/db";
 import {bloggersDBRepository} from "../repositories/BloggersRepository";
 import {postsBusiness} from "../domain/PostsBusiness";
 

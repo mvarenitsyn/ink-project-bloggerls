@@ -1,7 +1,7 @@
 import express, {NextFunction} from 'express'
 import cors from 'cors'
 import bodyParser from "body-parser";
-import {Request, Response} from "express";
+
 
 
 import {videoRouter} from "./routes/video-routes";
