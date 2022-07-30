@@ -74,7 +74,7 @@ bloggersRouter.put('/:id', isAuthorized, isValidBlogger,
 
     })
 
-bloggersRouter.get('/:bloggerId/posts', isValidBlogger, param('bloggerId').isInt(),
+bloggersRouter.get('/:bloggerId/posts', isValidBlogger,
     query('PageNumber').isInt().optional({checkFalsy: true}),
     query('PageSize').isInt().optional({checkFalsy: true}),
 
@@ -95,8 +95,7 @@ bloggersRouter.get('/:bloggerId/posts', isValidBlogger, param('bloggerId').isInt
 bloggersRouter.post('/:bloggerId/posts', isAuthorized, isValidBlogger,
     body('title').trim().notEmpty().isLength({max: 30}),
     body('shortDescription').trim().notEmpty().isLength({max: 100}),
-    body('content').trim().notEmpty().isLength({max: 1000}),
-    param('bloggerId').isInt(), async (req: Request, res: Response) => {
+    body('content').trim().notEmpty().isLength({max: 1000}), async (req: Request, res: Response) => {
     const {title, shortDescription, content} = req.body
         const errors = validationResult(req)
         if (!errors.isEmpty()) {

@@ -11,6 +11,8 @@ export const isValidBlogger = async (req: Request, res: Response, next:NextFunct
         res.sendStatus(404)
         return
     } else next()
+
+    return
 };
 
 export const isValidUserId = async (req: Request, res: Response, next:NextFunction) => {
@@ -49,13 +51,21 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
         res.sendStatus(401)
         return
     }
+
     const authType: string | undefined = req.headers.authorization?.split(" ")[0].toString() || undefined
     const authPhrase: string = req.headers.authorization?.split(" ")[1].toString()
+
     //Basic auth
     if (authType === 'Basic') {
         const authorized = authPhrase === 'YWRtaW46cXdlcnR5'
-        authorized && next()
-        return
+        if(authorized) {
+            next()
+            return
+        } else {
+            res.sendStatus(401)
+            return
+        }
+
     }
     //JWT auth
     if (authType === 'Bearer') {
