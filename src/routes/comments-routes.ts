@@ -11,20 +11,16 @@ commentsRoutes.get('/:id', async (req: Request, res: Response) => {
     if(comment) {
         res.status(200).json(comment)
         return
-    } else res.sendStatus(404)
+    } else {
+        res.sendStatus(404)
+        return
+    }
 
-    return
 })
 
 commentsRoutes.delete('/:commentId', isAuthorized, async (req: Request, res: Response) => {
 
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
-        return
-    }
     const comment = isObjectId(req.params.commentId) ? await commentsRepo.getCommentById(req.params.commentId) : undefined
-
 
     if(comment) {
         const currentUserId = req.currentUser!._id.toString()
@@ -36,8 +32,11 @@ commentsRoutes.delete('/:commentId', isAuthorized, async (req: Request, res: Res
             res.sendStatus(403)
             return
         }
-    } else res.sendStatus(404)
-    return
+    } else {
+        res.sendStatus(404)
+        return
+    }
+
 })
 
 commentsRoutes.put('/:commentId', isAuthorized, body('content').isLength({min:20, max:300}),async (req: Request, res: Response) => {
