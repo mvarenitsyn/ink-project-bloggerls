@@ -1,5 +1,5 @@
 import {commentDBType} from "../db/types";
-import {commentsCollection, usersCollection} from "../db/data";
+import {commentsCollection} from "../db/data";
 import {ObjectId} from "mongodb";
 
 export const commentsRepository = {
@@ -33,7 +33,7 @@ export const commentsRepository = {
     deleteComment: async (id: ObjectId) => {
         return await commentsCollection.deleteOne({_id: id})
     },
-    getCommentsByPostId: async (postId: number, pageNum: number, pageSize: number) => {
+    getCommentsByPostId: async (postId: string, pageNum: number, pageSize: number) => {
         return await commentsCollection.find({postId: postId})
             .skip((pageNum - 1) * pageSize)
             .limit(pageSize)

@@ -12,7 +12,7 @@ export type commentDBType = {
     "userId": string,
     "userLogin": string,
     "addedAt": Date,
-    "postId": number
+    "postId": string
 }
 
 export type userDBtype = {

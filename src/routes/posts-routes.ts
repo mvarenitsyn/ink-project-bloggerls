@@ -51,7 +51,7 @@ postsRouter.get('/:postId/comments', isValidPost,
             return
         }
 
-        res.status(200).send(await commentsRepo.getCommentsByPostId(+req.params.postId, pageNumber, pageSize))
+        res.status(200).send(await commentsRepo.getCommentsByPostId(req.params.postId, pageNumber, pageSize))
         return
     })
 
@@ -91,7 +91,7 @@ postsRouter.post('/:postId/comments', validateSeq([
             return
         }
         if (req.currentUser) {
-            res.status(201).send(await commentsRepo.createComment(+req.params.postId, content, req.currentUser))
+            res.status(201).send(await commentsRepo.createComment(req.params.postId, content, req.currentUser))
             return
         }
         res.sendStatus(401)

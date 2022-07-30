@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {body, query, param, validationResult} from 'express-validator'
+import {body, query, validationResult} from 'express-validator'
 
 
 import {bloggersRepo} from "../domain/BloggersBusiness";
@@ -87,7 +87,7 @@ bloggersRouter.get('/:bloggerId/posts', isValidBlogger,
             res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
             return
         }
-        res.status(200).send(await bloggersRepo.getBloggerPosts(pageNumber, pageSize, +req.params.bloggerId))
+        res.status(200).send(await bloggersRepo.getBloggerPosts(pageNumber, pageSize, req.params.bloggerId))
 
         return
     })

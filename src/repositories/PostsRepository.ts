@@ -4,7 +4,7 @@ import {postInterface} from "../db/types";
 
 export const postsRepo = {
 
-    getPosts: async (pageNum: number, pageSize: number, bloggerId?:number): Promise<[number, Object[]]> => {
+    getPosts: async (pageNum: number, pageSize: number, bloggerId?:string): Promise<[number, Object[]]> => {
         const filter = bloggerId ? {bloggerId: bloggerId} :{}
 
         const resultCount = await postsCollection.countDocuments(filter)

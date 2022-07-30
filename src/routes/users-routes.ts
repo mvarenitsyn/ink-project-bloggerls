@@ -1,13 +1,17 @@
 import {Request, Response, Router} from "express";
-import {body, validationResult} from 'express-validator'
+import {body, query, validationResult} from 'express-validator'
 import {errorsAdapt} from "../utils";
 import {usersRepo} from "../domain/UsersBusiness";
 import {isAuthorized, isValidUserId} from "../middleware";
 
 export const usersRouter = Router({})
 
-usersRouter.get('/', async (req:Request, res:Response) => {
-    res.status(200).json(await usersRepo.getUsers(1,10))
+usersRouter.get('/', query('PageNumber').isInt().optional({checkFalsy: true}),
+    query('PageSize').isInt().optional({checkFalsy: true}),
+    async (req: Request, res: Response) => {
+        const pageNumber = req.query.PageNumber ? Number(req.query.PageNumber) : undefined
+        const pageSize = req.query.PageSize ? Number(req.query.PageSize) : undefined
+        res.status(200).json(await usersRepo.getUsers(pageNumber,pageSize))
 })
 
 usersRouter.post('/',

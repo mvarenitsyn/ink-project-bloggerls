@@ -39,11 +39,10 @@ export const bloggersRepo = {
     },
 
     getBloggerById: async (id:string) => {
-        const blogger = await bloggersDBRepository.getBloggerById(id)
-        return blogger
+        return await bloggersDBRepository.getBloggerById(id)
     },
 
-    getBloggerPosts: async (pageNumber: number = 1, pageSize: number = 10, bloggerId: number) => {
+    getBloggerPosts: async (pageNumber: number = 1, pageSize: number = 10, bloggerId: string) => {
         const postsData = await postsRepo.getPosts(pageNumber, pageSize, bloggerId)
         const pagesCount = Math.ceil(postsData[0] / pageSize)
         return {

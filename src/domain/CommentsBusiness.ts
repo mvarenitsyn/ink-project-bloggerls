@@ -1,10 +1,9 @@
 import {commentDBType, userDBtype} from "../db/types";
 import {ObjectId} from "mongodb";
 import {commentsRepository} from "../repositories/CommentsRepository";
-import {usersDBRepository} from "../repositories/UsersRepository";
 
 export const commentsRepo = {
-    createComment: async (postId: number, content: string, user: userDBtype) => {
+    createComment: async (postId: string, content: string, user: userDBtype) => {
         const newComment: commentDBType = {
             _id: new ObjectId(),
             content: content,
@@ -27,7 +26,7 @@ export const commentsRepo = {
         }
     },
 
-    getCommentsByPostId: async (postId: number, pageNumber: number = 1, pageSize: number = 10) => {
+    getCommentsByPostId: async (postId: string, pageNumber: number = 1, pageSize: number = 10) => {
         const userCount = await commentsRepository.countComments({})
         const pagesCount = Math.ceil(userCount/pageSize)
         const comments = await commentsRepository.getCommentsByPostId(postId, pageNumber, pageSize)
