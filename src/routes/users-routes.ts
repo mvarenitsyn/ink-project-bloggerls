@@ -2,7 +2,7 @@ import {Request, Response, Router} from "express";
 import {body, validationResult} from 'express-validator'
 import {errorsAdapt} from "../utils";
 import {usersRepo} from "../domain/UsersBusiness";
-import {isAuthorized, isValidUserId} from "../middleware/general";
+import {isAuthorized, isValidUserId} from "../middleware";
 
 export const usersRouter = Router({})
 

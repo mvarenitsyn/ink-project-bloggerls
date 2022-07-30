@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 
 import {param, body, query, validationResult} from 'express-validator'
-import {isAuthorized, isValidBlogger, isValidPost} from "../middleware/general";
+import {isAuthorized, isValidBlogger, isValidPost} from "../middleware";
 import {errorsAdapt, validateSeq} from "../utils";
 import {bloggersRepo} from "../domain/BloggersBusiness";
 import {postsBusiness} from "../domain/PostsBusiness";

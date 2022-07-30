@@ -39,5 +39,16 @@ export const commentsRepo = {
             "totalCount": userCount,
             "items": comments
         }
+    },
+
+    async updateComment(id: string, content: string) {
+        return await commentsRepository.updateComment(new ObjectId(id), content)
+    },
+
+    async deleteComment(id: string) {
+        return await commentsRepository.deleteComment(new ObjectId(id))
+    },
+    async getCommentById(id: string) {
+        return await commentsRepository.getCommentById(id)
     }
 }

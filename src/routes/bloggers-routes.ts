@@ -4,7 +4,7 @@ import {body, query, param, validationResult} from 'express-validator'
 
 import {bloggersRepo} from "../domain/BloggersBusiness";
 import {errorsAdapt} from "../utils";
-import {isAuthorized, isValidBlogger} from "../middleware/general";
+import {isAuthorized, isValidBlogger} from "../middleware";
 
 export const bloggersRouter = Router({})
 
