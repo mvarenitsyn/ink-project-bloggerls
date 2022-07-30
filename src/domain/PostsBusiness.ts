@@ -15,21 +15,21 @@ export const postsBusiness = {
         }
     },
 
-    updatePostById: async (id: number, title: string, shortDescription: string, content: string, bloggerId: number) => {
+    updatePostById: async (id: number, title: string, shortDescription: string, content: string, bloggerId: string) => {
         const blogger = await bloggersRepo.getBloggerById(bloggerId)
         blogger?.name && await postsRepo.updatePostById(id, title, shortDescription, content, bloggerId, blogger?.name)
         return
     },
 
-    createPost: async (title: string, shortDescription: string, content: string, bloggerId: number) => {
+    createPost: async (title: string, shortDescription: string, content: string, bloggerId: string) => {
         const blogger = await bloggersRepo.getBloggerById(bloggerId)
         return postsRepo.createPost({
             "_id": new ObjectId(),
-            "id": Number(new Date()),
+            "id": String(new Date()),
             "title": title,
             "shortDescription": shortDescription,
             "content": content,
-            "bloggerId": bloggerId,
+            "bloggerId": bloggerId.toString(),
             "bloggerName" : blogger?.name || ''
         })
     },
