@@ -17,22 +17,28 @@ export const bloggersRepo = {
         }
     },
     createBlogger: async (name:string, youtubeUrl:string) => {
-       return await bloggersDBRepository.createBlogger({
+       const newBlogger = {
            "_id": new ObjectId(),
-           "id": Number(new Date()),
+           "id": String(new Date()),
            "name": name,
            "youtubeUrl": youtubeUrl
-        })
+       }
+        await bloggersDBRepository.createBlogger(newBlogger)
+        return {
+            "id": newBlogger.id,
+            "name": newBlogger.name,
+            "youtubeUrl": newBlogger.youtubeUrl
+        }
     },
-    updateBloggerById: async (id:number, name:string, youtubeUrl:string) => {
+    updateBloggerById: async (id:string, name:string, youtubeUrl:string) => {
         return await bloggersDBRepository.updateBloggerById(id, name, youtubeUrl)
     },
 
-    deleteBlogger: async (id:number) => {
+    deleteBlogger: async (id:string) => {
         return await bloggersDBRepository.deleteBloggerById(id)
     },
 
-    getBloggerById: async (id:number) => {
+    getBloggerById: async (id:string) => {
         const blogger = await bloggersDBRepository.getBloggerById(id)
         return blogger
     },
@@ -48,18 +54,26 @@ export const bloggersRepo = {
             "items": postsData[1]
         }
     },
-    createBloggerPost: async (title: string, shortDescription: string, content: string, bloggerId: number) => {
+    createBloggerPost: async (title: string, shortDescription: string, content: string, bloggerId: string) => {
         const blogger = await bloggersRepo.getBloggerById(bloggerId)
-        return postsRepo.createPost({
+        const newPost = {
             "_id": new ObjectId(),
-            "id": Number(new Date()),
+            "id": (new Date()).toString(),
             "title": title,
             "shortDescription": shortDescription,
             "content": content,
             "bloggerId": bloggerId,
-            "bloggerName" : blogger?.name || ''
-        })
+            "bloggerName" : blogger!.name
+        }
+        await postsRepo.createPost(newPost)
+        return {
+            "id": newPost.id.toString(),
+            "title": newPost.title,
+            "shortDescription": newPost.shortDescription,
+            "content": newPost.content,
+            "bloggerId": newPost.bloggerId.toString(),
+            "bloggerName": newPost.bloggerName
+        }
     }
-    ,
 
 }

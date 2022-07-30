@@ -1,7 +1,7 @@
 import {ObjectId, WithId, Document} from 'mongodb'
 export type bloggerDBType = {
     "_id": ObjectId,
-    "id": number,
+    "id": string,
     "name": string,
     "youtubeUrl": string
 }
@@ -23,11 +23,11 @@ export type userDBtype = {
 
 export interface postInterface extends WithId<Document>{
     "_id": ObjectId,
-    "id": number,
+    "id": string,
     "title": string,
     "shortDescription": string,
     "content": string,
-    "bloggerId": number,
+    "bloggerId": string,
     "bloggerName": string
 }
 
