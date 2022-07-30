@@ -126,7 +126,7 @@ postsRouter.delete('/:id', isAuthorized, isValidPost, async (req: Request, res: 
         res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
         return
     }
-    await postsBusiness.deletePost(+req.params.id)
+    await postsBusiness.deletePost(req.params.id)
     res.sendStatus(204)
     return
 

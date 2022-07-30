@@ -20,7 +20,7 @@ export const postsRepo = {
         return await postsCollection.findOne(filter, {projection: {_id: 0}})
     },
 
-    deletePostById: async (id: number) => {
+    deletePostById: async (id: string) => {
         const filter = {id: id}
         await postsCollection.deleteOne(filter)
         return

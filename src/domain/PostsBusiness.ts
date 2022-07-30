@@ -34,7 +34,7 @@ export const postsBusiness = {
         })
     },
 
-    deletePost: async (id:number) => {
+    deletePost: async (id:string) => {
         return await postsRepo.deletePostById(id)
     },
 
