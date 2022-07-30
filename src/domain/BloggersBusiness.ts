@@ -19,7 +19,7 @@ export const bloggersRepo = {
     createBlogger: async (name:string, youtubeUrl:string) => {
        const newBlogger = {
            "_id": new ObjectId(),
-           "id": String(new Date()),
+           "id": Number(new Date()).toString(),
            "name": name,
            "youtubeUrl": youtubeUrl
        }
@@ -58,7 +58,7 @@ export const bloggersRepo = {
         const blogger = await bloggersRepo.getBloggerById(bloggerId)
         const newPost = {
             "_id": new ObjectId(),
-            "id": (new Date()).toString(),
+            "id": Number(new Date()).toString(),
             "title": title,
             "shortDescription": shortDescription,
             "content": content,

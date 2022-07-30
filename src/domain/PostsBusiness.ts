@@ -25,7 +25,7 @@ export const postsBusiness = {
         const blogger = await bloggersRepo.getBloggerById(bloggerId)
         return postsRepo.createPost({
             "_id": new ObjectId(),
-            "id": String(new Date()),
+            "id": Number(new Date()).toString(),
             "title": title,
             "shortDescription": shortDescription,
             "content": content,
