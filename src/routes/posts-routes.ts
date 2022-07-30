@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 
 import {param, body, query, validationResult} from 'express-validator'
-import {isAuthorized, isValidBlogger, isValidPost} from "../middleware";
+import {isAuthorized, isValidPost} from "../middleware";
 import {errorsAdapt, validateSeq} from "../utils";
 import {bloggersRepo} from "../domain/BloggersBusiness";
 import {postsBusiness} from "../domain/PostsBusiness";
@@ -34,7 +34,7 @@ postsRouter.get('/:id', isValidPost, async (req: Request, res: Response) => {
         return
     }
 
-    res.status(200).send(await postsBusiness.getPostById(+req.params.id))
+    res.status(200).send(await postsBusiness.getPostById(req.params.id))
     return
 })
 
