@@ -16,7 +16,7 @@ commentsRoutes.get('/:id', async (req: Request, res: Response) => {
     return
 })
 
-commentsRoutes.delete('/:commentId', body,isAuthorized, async (req: Request, res: Response) => {
+commentsRoutes.delete('/:commentId', async (req: Request, res: Response) => {
 
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -24,9 +24,10 @@ commentsRoutes.delete('/:commentId', body,isAuthorized, async (req: Request, res
         return
     }
     const comment = isObjectId(req.params.commentId) ? await commentsRepo.getCommentById(req.params.commentId) : undefined
-    const currentUserId = req.currentUser!._id.toString()
+
 
     if(comment) {
+        const currentUserId = req.currentUser!._id.toString()
         if(currentUserId === comment.userId) {
             await commentsRepo.deleteComment(req.params.commentId)
             res.sendStatus(204)
@@ -46,10 +47,10 @@ commentsRoutes.put('/:commentId', isAuthorized, body('content').isLength({min:20
         return
     }
 
-    const comment = await commentsRepo.getCommentById(req.params.commentId)
-    const currentUserId = req.currentUser!._id.toString()
+    const comment = isObjectId(req.params.commentId) ? await commentsRepo.getCommentById(req.params.commentId) : undefined
 
     if (comment) {
+        const currentUserId = req.currentUser!._id.toString()
         if (currentUserId === comment.userId) {
             await commentsRepo.updateComment(req.params.commentId, req.body.content)
             res.sendStatus(204)
