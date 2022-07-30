@@ -25,7 +25,7 @@ bloggersRouter.get('/',
     })
 
 bloggersRouter.get('/:id', isValidBlogger, async (req: Request, res: Response) => {
-    res.status(200).send(await bloggersRepo.getBloggerById(+req.params.id))
+    res.status(200).send(await bloggersRepo.getBloggerById(req.params.id))
     return
 
 
@@ -34,7 +34,7 @@ bloggersRouter.get('/:id', isValidBlogger, async (req: Request, res: Response) =
 
 bloggersRouter.delete('/:id', isAuthorized, isValidBlogger, async (req: Request, res: Response) => {
 
-    await bloggersRepo.deleteBlogger(+req.params.id)
+    await bloggersRepo.deleteBlogger(req.params.id)
     res.sendStatus(204)
     return
 
@@ -68,7 +68,7 @@ bloggersRouter.put('/:id', isAuthorized, isValidBlogger,
             res.end()
             return
         }
-        await bloggersRepo.updateBloggerById(+req.params.id, name, youtubeUrl)
+        await bloggersRepo.updateBloggerById(req.params.id, name, youtubeUrl)
         res.sendStatus(204)
         return
 
@@ -103,7 +103,7 @@ bloggersRouter.post('/:bloggerId/posts', isAuthorized, isValidBlogger,
             res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
             return
         }
-        res.status(201).send(await bloggersRepo.createBloggerPost(title, shortDescription, content, +req.params.bloggerId))
+        res.status(201).send(await bloggersRepo.createBloggerPost(title, shortDescription, content, req.params.bloggerId))
 
         return
     })
