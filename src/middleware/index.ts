@@ -71,5 +71,3 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
     res.sendStatus(401)
     return
 }}
-
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmU0MjJjZmU5OTBjYzk4YjM4YzY4YWUiLCJpYXQiOjE2NTkxMjQ4NTUsImV4cCI6MTY1OTEyODQ1NX0.q2nXrOtSDtEbFAIgun2B2D_afIpNEpXFdM2Mp2tbsIw
