@@ -16,7 +16,7 @@ commentsRoutes.get('/:id', async (req: Request, res: Response) => {
     return
 })
 
-commentsRoutes.delete('/:commentId', async (req: Request, res: Response) => {
+commentsRoutes.delete('/:commentId', isAuthorized, async (req: Request, res: Response) => {
 
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
