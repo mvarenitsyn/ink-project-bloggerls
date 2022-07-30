@@ -20,7 +20,7 @@ bloggersRouter.get('/',
             res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
             return
         }
-        res.status(200).send('OK')
+        res.status(200).send(await bloggersRepo.getBloggers(searchTerm, pageNumber, pageSize))
         return
     })
 
