@@ -32,3 +32,4 @@ export const validateSeq = (validations: ValidationChain[]) => {
 export const isObjectId = (id:string) => {
     return id.split('').length === 24
 }
+

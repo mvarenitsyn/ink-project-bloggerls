@@ -58,6 +58,9 @@ commentsRoutes.put('/:commentId', isAuthorized, body('content').isLength({min:20
             res.sendStatus(403)
             return
         }
-    } else res.sendStatus(404)
-    return
+    } else {
+        res.sendStatus(404)
+        return
+    }
+
 })

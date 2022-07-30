@@ -27,7 +27,7 @@ export const commentsRepo = {
     },
 
     getCommentsByPostId: async (postId: string, pageNumber: number = 1, pageSize: number = 10) => {
-        const userCount = await commentsRepository.countComments({})
+        const userCount = await commentsRepository.countComments({postId: postId})
         const pagesCount = Math.ceil(userCount/pageSize)
         const comments = await commentsRepository.getCommentsByPostId(postId, pageNumber, pageSize)
 
