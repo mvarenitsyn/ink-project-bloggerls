@@ -26,6 +26,7 @@ export const usersDBRepository = {
     },
 
     getUser: async (filter: ObjectId | string) => {
+        console.log('f')
         if(typeof filter === "string") {
             return usersCollection.findOne({login: filter});
         }

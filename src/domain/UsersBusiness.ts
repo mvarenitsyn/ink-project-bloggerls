@@ -37,7 +37,11 @@ export const usersRepo = {
     },
 
     getUserById: async (id: string) => {
-        return await usersDBRepository.getUser(new ObjectId(id))
+        try {
+            return await usersDBRepository.getUser(new ObjectId(id))
+        } catch (e) {
+            return null
+        }
     },
 
     getUserByLogin: async (login: string) => {
