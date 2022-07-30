@@ -11,16 +11,7 @@ export const bloggersRouter = Router({})
 bloggersRouter.get('/',
     query('PageNumber').isInt().optional({checkFalsy: true}),
     query('PageSize').isInt().optional({checkFalsy: true}), async (req: Request, res: Response) => {
-        const searchTerm = req.query.SearchNameTerm?.toString()
-        const pageNumber = req.query.PageNumber ? Number(req.query.PageNumber) : undefined
-        const pageSize = req.query.PageSize ? Number(req.query.PageSize) : undefined
-
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
-            return
-        }
-        res.status(200).send(await bloggersRepo.getBloggers(searchTerm, pageNumber, pageSize))
+        res.sendStatus(200)
         return
     })
 
