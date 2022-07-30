@@ -26,7 +26,7 @@ export const postsRepo = {
         return
     },
 
-    updatePostById: async (id: number, title: string, shortDescription: string, content: string, bloggerId: string, bloggerName: string | undefined) => {
+    updatePostById: async (id: string, title: string, shortDescription: string, content: string, bloggerId: string, bloggerName: string | undefined) => {
         const filter = {id: id}
         await postsCollection.updateOne(filter, {
             $set: {

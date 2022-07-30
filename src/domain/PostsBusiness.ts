@@ -15,7 +15,7 @@ export const postsBusiness = {
         }
     },
 
-    updatePostById: async (id: number, title: string, shortDescription: string, content: string, bloggerId: string) => {
+    updatePostById: async (id: string, title: string, shortDescription: string, content: string, bloggerId: string) => {
         const blogger = await bloggersRepo.getBloggerById(bloggerId)
         blogger?.name && await postsRepo.updatePostById(id, title, shortDescription, content, bloggerId, blogger?.name)
         return

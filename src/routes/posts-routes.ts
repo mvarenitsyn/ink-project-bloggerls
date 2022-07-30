@@ -115,7 +115,7 @@ postsRouter.put('/:id', isAuthorized, isValidPost,
             return
         }
 
-        await postsBusiness.updatePostById(+req.params.id, title, shortDescription, content, bloggerId)
+        await postsBusiness.updatePostById(req.params.id, title, shortDescription, content, bloggerId)
         res.sendStatus(204)
         res.end()
 
