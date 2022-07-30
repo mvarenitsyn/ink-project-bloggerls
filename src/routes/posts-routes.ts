@@ -1,10 +1,11 @@
 import {Request, Response, Router} from "express";
 
-import {body, query, validationResult} from 'express-validator'
+import {param, body, query, validationResult} from 'express-validator'
 import {isAuthorized, isValidBlogger, isValidPost} from "../middleware/general";
-import {errorsAdapt} from "../utils";
+import {errorsAdapt, validateSeq} from "../utils";
 import {bloggersRepo} from "../domain/BloggersBusiness";
 import {postsBusiness} from "../domain/PostsBusiness";
+import {commentsRepo} from "../domain/CommentsBusiness";
 
 export const postsRouter = Router({})
 
@@ -37,6 +38,23 @@ postsRouter.get('/:id', isValidPost, async (req: Request, res: Response) => {
     return
 })
 
+postsRouter.get('/:postId/comments', isValidPost,
+    query('PageNumber').isInt().optional({checkFalsy: true}),
+    query('PageSize').isInt().optional({checkFalsy: true}),
+    async (req: Request, res: Response) => {
+        const pageNumber = req.query.PageNumber ? Number(req.query.PageNumber) : undefined
+        const pageSize = req.query.PageSize ? Number(req.query.PageSize) : undefined
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
+            return
+        }
+
+        res.status(200).send(await commentsRepo.getCommentsByPostId(+req.params.postId, pageNumber, pageSize))
+        return
+    })
+
 postsRouter.post('/', isAuthorized,
     body('title').trim().notEmpty().isLength({max: 30}),
     body('shortDescription').trim().notEmpty().isLength({max: 100}),
@@ -58,6 +76,26 @@ postsRouter.post('/', isAuthorized,
         return
 
 
+    })
+
+postsRouter.post('/:postId/comments', validateSeq([
+        param('postId').isInt(),
+        body('content').trim().notEmpty().isLength({max: 300, min: 20})
+    ]), isAuthorized, isValidPost,
+    async (req: Request, res: Response) => {
+        const {content} = req.body
+        const errors = validationResult(req)
+
+        if (!errors.isEmpty()) {
+            res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
+            return
+        }
+        if (req.currentUser) {
+            res.status(201).send(await commentsRepo.createComment(+req.params.postId, content, req.currentUser))
+            return
+        }
+        res.sendStatus(401)
+        return
     })
 
 postsRouter.put('/:id', isAuthorized, isValidPost,

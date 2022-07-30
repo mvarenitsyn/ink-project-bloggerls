@@ -23,5 +23,14 @@ export const usersDBRepository = {
 
     deleteUser: async (id: ObjectId) => {
         return await usersCollection.deleteOne({_id: id})
+    },
+
+    getUser: async (filter: ObjectId | string) => {
+        if(typeof filter === "string") {
+            return usersCollection.findOne({login: filter});
+        }
+        else {
+            return usersCollection.findOne({_id: filter});
+        }
     }
 }

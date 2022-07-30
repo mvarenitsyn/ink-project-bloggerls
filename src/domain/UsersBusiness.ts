@@ -21,7 +21,7 @@ export const usersRepo = {
     getUsers: async (pageNumber: number = 1, pageSize: number = 10) => {
         const userCount = await usersDBRepository.countUsers({})
         const pagesCount = Math.ceil(userCount/pageSize)
-        const users = await usersDBRepository.getUsers(1, 10)
+        const users = await usersDBRepository.getUsers(pageNumber, pageSize)
 
         return {
             "pagesCount": pagesCount,
@@ -34,5 +34,13 @@ export const usersRepo = {
 
     deleteUser: async (id: string) => {
         return await usersDBRepository.deleteUser(new ObjectId(id))
+    },
+
+    getUserById: async (id: string) => {
+        return await usersDBRepository.getUser(new ObjectId(id))
+    },
+
+    getUserByLogin: async (login: string) => {
+        return await usersDBRepository.getUser(login)
     }
 }

@@ -6,6 +6,15 @@ export type bloggerDBType = {
     "youtubeUrl": string
 }
 
+export type commentDBType = {
+    "_id": ObjectId,
+    "content": string,
+    "userId": string,
+    "userLogin": string,
+    "addedAt": Date,
+    "postId": number
+}
+
 export type userDBtype = {
     "_id": ObjectId,
     "login": string,
@@ -21,3 +30,4 @@ export interface postInterface extends WithId<Document>{
     "bloggerId": number,
     "bloggerName": string
 }
+
