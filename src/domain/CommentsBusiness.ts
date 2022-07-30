@@ -48,6 +48,11 @@ export const commentsRepo = {
         return await commentsRepository.deleteComment(new ObjectId(id))
     },
     async getCommentById(id: string) {
-        return await commentsRepository.getCommentById(id)
+        try {
+            return await commentsRepository.getCommentById(id)
+        }
+        catch (e) {
+            return null
+        }
     }
 }
