@@ -28,3 +28,7 @@ export const validateSeq = (validations: ValidationChain[]) => {
         res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))});
     };
 };
+
+export const isObjectId = (id:string) => {
+    return id.split('').length === 24
+}

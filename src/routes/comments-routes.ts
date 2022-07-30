@@ -2,7 +2,7 @@ import {Request, Response, Router} from "express";
 import {commentsRepo} from "../domain/CommentsBusiness";
 import {isAuthorized} from "../middleware";
 import {body, validationResult} from "express-validator";
-import {errorsAdapt} from "../utils";
+import {errorsAdapt, isObjectId} from "../utils";
 
 export const commentsRoutes = Router({})
 
@@ -16,15 +16,14 @@ commentsRoutes.get('/:id', async (req: Request, res: Response) => {
     return
 })
 
-commentsRoutes.delete('/:commentId', isAuthorized, async (req: Request, res: Response) => {
+commentsRoutes.delete('/:commentId', body,isAuthorized, async (req: Request, res: Response) => {
 
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
         res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
         return
     }
-
-    const comment = await commentsRepo.getCommentById(req.params.commentId)
+    const comment = isObjectId(req.params.commentId) ? await commentsRepo.getCommentById(req.params.commentId) : undefined
     const currentUserId = req.currentUser!._id.toString()
 
     if(comment) {

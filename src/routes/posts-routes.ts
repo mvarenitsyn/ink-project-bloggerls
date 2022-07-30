@@ -7,6 +7,7 @@ import {bloggersRepo} from "../domain/BloggersBusiness";
 import {postsBusiness} from "../domain/PostsBusiness";
 import {commentsRepo} from "../domain/CommentsBusiness";
 
+
 export const postsRouter = Router({})
 
 postsRouter.get('/',
@@ -131,3 +132,5 @@ postsRouter.delete('/:id', isAuthorized, isValidPost, async (req: Request, res: 
     return
 
 })
+
+
