@@ -118,8 +118,6 @@ postsRouter.put('/:id', isAuthorized, isValidPost,
         await postsBusiness.updatePostById(req.params.id, title, shortDescription, content, bloggerId)
         res.sendStatus(204)
         res.end()
-
-
     })
 
 postsRouter.delete('/:id', isAuthorized, isValidPost, async (req: Request, res: Response) => {
