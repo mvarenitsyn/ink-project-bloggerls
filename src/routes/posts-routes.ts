@@ -79,10 +79,10 @@ postsRouter.post('/', isAuthorized,
 
     })
 
-postsRouter.post('/:postId/comments', validateSeq([
+postsRouter.post('/:postId/comments', isAuthorized, validateSeq([
         param('postId').isInt(),
         body('content').trim().notEmpty().isLength({max: 300, min: 20})
-    ]), isAuthorized, isValidPost,
+    ]), isValidPost,
     async (req: Request, res: Response) => {
         const {content} = req.body
         const errors = validationResult(req)

@@ -65,7 +65,6 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
     //JWT auth
     if (authType === 'Bearer') {
         const userId = authRepo.getUserIdByToken(authPhrase)
-
         if(userId) {
             req.currentUser = await usersRepo.getUserById(userId)
             next()
