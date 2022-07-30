@@ -67,12 +67,12 @@ export const bloggersRepo = {
         }
         await postsRepo.createPost(newPost)
         return {
-            "id": newPost.id.toString(),
-            "title": newPost.title,
-            "shortDescription": newPost.shortDescription,
-            "content": newPost.content,
             "bloggerId": newPost.bloggerId.toString(),
-            "bloggerName": newPost.bloggerName
+            "bloggerName": newPost.bloggerName,
+            "content": newPost.content,
+            "id": newPost.id.toString(),
+            "shortDescription": newPost.shortDescription,
+            "title": newPost.title
         }
     }
 
