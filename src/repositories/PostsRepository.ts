@@ -15,10 +15,9 @@ export const postsRepo = {
         return [resultCount, posts]
     },
 
-    getPostById: async (id: number) => {
+    getPostById: async (id: string) => {
         const filter = {id: id}
-        const post = await postsCollection.findOne(filter, {projection: {_id: 0}})
-        return post
+        return await postsCollection.findOne(filter, {projection: {_id: 0}})
     },
 
     deletePostById: async (id: number) => {

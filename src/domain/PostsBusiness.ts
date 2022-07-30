@@ -38,7 +38,7 @@ export const postsBusiness = {
         return await postsRepo.deletePostById(id)
     },
 
-    getPostById: (id:number) => {
+    getPostById: (id:string) => {
         return postsRepo.getPostById(id)
     }
 

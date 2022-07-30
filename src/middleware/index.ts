@@ -30,10 +30,11 @@ export const isValidUserId = async (req: Request, res: Response, next:NextFuncti
     }
 };
 
-export const isValidPost= (req: Request, res: Response, next:NextFunction) => {
-    const postId = +req.params.postId || +req.params.id || null
-    const exist = postId ? postsBusiness.getPostById(postId) : null
-    if(!exist) {
+export const isValidPost= async (req: Request, res: Response, next: NextFunction) => {
+    const postId = req.params.postId || req.params.id || null
+    const exist = postId ? await postsBusiness.getPostById(postId) : null
+    console.log(exist)
+    if (!exist) {
         res.status(404)
         res.end()
         return
