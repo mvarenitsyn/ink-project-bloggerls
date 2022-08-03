@@ -38,7 +38,7 @@ export const authRepo = {
             if (isCreated) {//check if user was created
                 const newUser = await usersRepo.getUserById(isCreated.id)
                 const confirmEmail = newUser && await MailService.sendEmail(newUser?.userData.email,
-                    `<a href="https://ink-project-bloggerls.herokuapp.com/auth/registration-confirmation?code=${newUser?.emailConfirmation.confirmationCode}">Confirm Email</a>`)
+                    `https://ink-project-bloggerls.herokuapp.com/auth/registration-confirmation?code=${newUser?.emailConfirmation.confirmationCode}`)
                 if (confirmEmail === '250') {
                     return '204'
                 } else return undefined

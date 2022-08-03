@@ -16,7 +16,7 @@ export const MailerRepository = {
                 from: `${fromName} <${email}>`,
                 to: to,
                 subject: subject,
-                html: message
+                text: message
             })
             return (result.response).split(' ')[0]
         } catch (e) {
