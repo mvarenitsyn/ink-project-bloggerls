@@ -60,5 +60,11 @@ export const usersRepo = {
 
     getUserByLogin: async (login: string) => {
         return await usersDBRepository.getUser(login)
+    },
+
+    updateUserConfirmationCode: async (email:string) => {
+        const code = uuidv4().toString()
+        await usersDBRepository.updateConfirmationCode(email, code)
+        return code
     }
 }

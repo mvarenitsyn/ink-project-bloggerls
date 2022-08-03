@@ -4,6 +4,7 @@ import 'dotenv/config'
 import jwt, {Secret} from "jsonwebtoken"
 import {MailService} from "./MailService";
 import {usersDBRepository} from "../repositories/UsersRepository";
+import {usersCollection} from "../db/data";
 
 const secret = process.env.JWT_SECRET
 
@@ -49,7 +50,12 @@ export const authRepo = {
         }
 
 
-    }
+    },
+
+   updateConfirmationCode: async (email: string) => {
+       const code = await usersRepo.updateUserConfirmationCode(email)
+       return await MailService.sendEmail(email, `https://ink-project-bloggerls.herokuapp.com/auth/registration-confirmation?code=${code}`)
+   }
 
 
 

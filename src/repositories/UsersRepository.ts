@@ -41,5 +41,8 @@ export const usersDBRepository = {
     },
     confirmUser: async (code:string) => {
         return await usersCollection.updateOne({"emailConfirmation.confirmationCode": code},{$set: {"emailConfirmation.isConfirmed": true}});
+    },
+    updateConfirmationCode: async (email: string, code: string) => {
+        return await usersCollection.updateOne({"userData.email": email}, {$set: {"emailConfirmation.confirmationCode": code}})
     }
 }

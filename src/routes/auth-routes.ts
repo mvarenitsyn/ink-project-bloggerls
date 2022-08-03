@@ -84,9 +84,7 @@ authRoutes.post('/registration-email-resending', isNotSpam('resend', 10, 5), bod
         res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
         return
     }
-    const user = await usersDBRepository.checkUserEmail(req.body.email)
-    await MailService.sendEmail(req.body.email,
-        `https://ink-project-bloggerls.herokuapp.com/auth/registration-confirmation?code=${user?.emailConfirmation.confirmationCode}`)
+    await authRepo.updateConfirmationCode(req.body.email)
     res.sendStatus(204)
 })
 
