@@ -35,7 +35,7 @@ export const authRepo = {
     userRegistration: async(login:string, password:string, email:string) => {
         try {
             const loginExist = await usersDBRepository.checkUser(login, email)
-            if(loginExist) { //Check if this user doesn't exist
+            if(!loginExist) { //Check if this user doesn't exist
                 const isCreated = await usersRepo.createUser(login, password, email)
                 if (isCreated) {//check if user was created
                     const newUser = await usersRepo.getUserById(isCreated.id)
