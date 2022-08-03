@@ -8,6 +8,7 @@ import {ObjectId} from "mongodb";
 import {LoggingRepository} from "../repositories/LoggingRepository";
 
 import sub from "date-fns/sub"
+import {userServices} from "../domain/UserServices";
 
 export const isValidBlogger = async (req: Request, res: Response, next: NextFunction) => {
     const bloggerId = req.params.bloggerId || req.params.id || null
@@ -81,16 +82,10 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
 }
 
 export const isNotSpam = (action:string, time: number = 10, limit: number = 5) => {
-    return async (req: Request, res: Response, next: NextFunction) => {
-        const logs = await LoggingRepository.getRequests(action, req.ip, sub(new Date(), {seconds: time}))
-        if(!logs || logs<3) {
-            const newLog = {
-                _id: new ObjectId(),
-                action: action,
-                ip: req.ip,
-                time: new Date()
-            }
-            await LoggingRepository.logRequest(newLog)
+    return (req: Request, res: Response, next: NextFunction) => {
+        const logs = userServices.getRequests(action, req.ip, sub(new Date(), {seconds: time}))
+        if(!logs || logs.length<limit) {
+            userServices.logRequest(action, req.ip, new Date())
             next()
             return
         } else {

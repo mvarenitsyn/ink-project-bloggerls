@@ -24,3 +24,9 @@ export const postsDB = [
         "bloggerName": "Vanya"
     }
 ]
+
+export const requestLog = [{
+    action: '',
+    ip: '',
+    time: new Date()
+}]

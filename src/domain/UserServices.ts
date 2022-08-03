@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import {requestLog} from "../db/db";
 
 export const userServices = {
 
@@ -15,12 +16,19 @@ export const userServices = {
 
     },
 
-    logRequest: async (action:string, ip:string) => {
-        const requestLog = {
+    logRequest: (action:string, ip:string, time: Date) => {
+        const newLog = {
             action: action,
             ip: ip,
-            time: new Date()
+            time: time
         }
+        requestLog.push(newLog)
+    },
+
+    getRequests: (action:string, ip:string, time:Date) => {
+        return requestLog.filter(request =>
+            request.action === action && request.ip === ip && request.time > time
+        )
     }
 
 }
