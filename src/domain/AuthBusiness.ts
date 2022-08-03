@@ -3,6 +3,7 @@ import {userServices} from "./UserServices";
 import 'dotenv/config'
 import jwt, {Secret} from "jsonwebtoken"
 import {MailService} from "./MailService";
+import {usersDBRepository} from "../repositories/UsersRepository";
 
 const secret = process.env.JWT_SECRET
 
@@ -31,16 +32,19 @@ export const authRepo = {
         }
 
     },
-    userRegistration: async (login: string, password: string, email: string) => {
+    userRegistration: async(login:string, password:string, email:string) => {
         try {
-            const isCreated = await usersRepo.createUser(login, password, email)
-            if (isCreated) {//check if user was created
-                const newUser = await usersRepo.getUserById(isCreated.id)
-                const confirmEmail = newUser && await MailService.sendEmail(newUser?.userData.email, newUser?.emailConfirmation.confirmationCode)
-                if (confirmEmail === '250') {
-                    return '204'
+            const loginExist = await usersDBRepository.checkUser(login, email)
+            if(loginExist) { //Check if user doesn't exist
+                const isCreated = await usersRepo.createUser(login, password, email)
+                if (isCreated) {//check if user was created
+                    const newUser = await usersRepo.getUserById(isCreated.id)
+                    const confirmEmail = newUser && await MailService.sendEmail(newUser?.userData.email, newUser?.emailConfirmation.confirmationCode)
+                    if(confirmEmail === '250') {
+                        return '204'
+                    } else return undefined
                 } else return undefined
-            } else return undefined
+            } else return undefined //return null if user already exists
         } catch (e) {
             return undefined
         }
