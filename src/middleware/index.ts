@@ -84,7 +84,6 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
 export const isNotSpam = (action:string, time: number = 10, limit: number = 5) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const logs = userServices.getRequests(action, req.ip, sub(new Date(), {seconds: time}))
-        console.log(logs.length, req.body.email, req.body.login)
         if(!logs || logs.length<limit) {
             userServices.logRequest(action, req.ip, new Date())
             next()
