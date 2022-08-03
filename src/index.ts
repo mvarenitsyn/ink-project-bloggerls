@@ -8,7 +8,7 @@ import {bloggersPlatform} from "./routes";
 const port = process.env.PORT || 3003
 
 const app =  express()
-app.set('trust proxy', true)
+
 
 app.use(cors())
 app.use(bodyParser.json())
@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use('/', bloggersPlatform)
-
+app.set('trust proxy', true)
 
 async function main()
 {
