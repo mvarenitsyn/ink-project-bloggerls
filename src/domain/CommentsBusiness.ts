@@ -8,7 +8,7 @@ export const commentsRepo = {
             _id: new ObjectId(),
             content: content,
             userId: user._id.toString(),
-            userLogin: user.login,
+            userLogin: user.userData.login,
             addedAt: new Date(),
             postId: postId
         }

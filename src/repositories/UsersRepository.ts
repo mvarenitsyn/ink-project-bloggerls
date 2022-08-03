@@ -12,7 +12,7 @@ export const usersDBRepository = {
             .skip((pageNumber-1)*pageSize)
             .limit(pageSize)
             .map(user => {
-            return {id: user._id.toString(), login: user.login}
+            return {id: user._id.toString(), login: user.userData.login}
         }).toArray()
 
     },
@@ -26,9 +26,8 @@ export const usersDBRepository = {
     },
 
     getUser: async (filter: ObjectId | string) => {
-        console.log('f')
         if(typeof filter === "string") {
-            return usersCollection.findOne({login: filter});
+            return usersCollection.findOne({"userData.login": filter});
         }
         else {
             return usersCollection.findOne({_id: filter});

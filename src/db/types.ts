@@ -17,8 +17,17 @@ export type commentDBType = {
 
 export type userDBtype = {
     "_id": ObjectId,
-    "login": string,
-    "password": string
+    "userData": {
+        "login": string,
+        "password": string
+        "email": string,
+        "createdAt": Date
+    }
+    "emailConfirmation": {
+        confirmationCode: string,
+        expirationDate: Date
+        isConfirmed: boolean
+    }
 }
 
 export interface postInterface extends WithId<Document>{
@@ -31,3 +40,9 @@ export interface postInterface extends WithId<Document>{
     "bloggerName": string
 }
 
+export type logDBtype = {
+    _id: ObjectId,
+    action: string,
+    ip: string,
+    time: Date
+}

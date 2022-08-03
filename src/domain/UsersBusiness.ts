@@ -1,21 +1,35 @@
 import {ObjectId} from "mongodb";
-import {userService} from "./user-service";
+import {userServices} from "./UserServices";
 import {usersDBRepository} from "../repositories/UsersRepository";
+import {v4 as uuidv4} from "uuid"
+import add from "date-fns/add"
 
 export const usersRepo = {
-    createUser: async (login: string, password: string) => {
-        const hashedPassword = await userService.hashPassword(password)
+    createUser: async (login: string, password: string, email:string) => {
+        const hashedPassword = await userServices.hashPassword(password)
         const result = await usersDBRepository.createUser({
-            "_id": new ObjectId(),
-            "login": login,
-            "password": hashedPassword
+            _id: new ObjectId(),
+            userData: {
+                login: login,
+                password: hashedPassword,
+                email: email,
+                createdAt: new Date()
+            },
+            emailConfirmation: {
+                confirmationCode: uuidv4().toString(),
+                expirationDate: add(new Date(), {
+                    hours: 1,
+                    minutes: 5
+                }),
+                isConfirmed: false
+            }
         })
         if(result.insertedId) {
             return {
                 "id": result.insertedId.toString(),
                 "login": login
             }
-        }
+        } else return null
     },
 
     getUsers: async (pageNumber: number = 1, pageSize: number = 10) => {

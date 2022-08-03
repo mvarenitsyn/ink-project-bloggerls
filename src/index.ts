@@ -10,7 +10,10 @@ import {bloggersPlatform} from "./routes";
 const app =  express()
 const port = process.env.PORT || 3003
 app.use(cors())
-app.use(bodyParser({extended: true}))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use('/', bloggersPlatform)
 
 

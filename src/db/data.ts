@@ -1,5 +1,5 @@
 import {MongoClient} from 'mongodb'
-import {bloggerDBType, commentDBType, postInterface, userDBtype} from './types'
+import {bloggerDBType, commentDBType, logDBtype, postInterface, userDBtype} from './types'
 import 'dotenv/config'
 
 const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017'
@@ -10,6 +10,7 @@ const db = client.db("merndb")
 export const bloggersCollection = db.collection<bloggerDBType>('bloggers')
 export const usersCollection = db.collection<userDBtype>('users')
 export const commentsCollection = db.collection<commentDBType>('comments')
+export const logsCollection = db.collection<logDBtype>('logs')
 export const postsCollection = db.collection<postInterface>('posts')
 
 export const connectDB = async() => {
