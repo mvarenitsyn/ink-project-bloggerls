@@ -27,7 +27,7 @@ authRoutes.post('/login',
         res.sendStatus(401)
     })
 
-authRoutes.post('/registration', isNotSpam('register', 15, 5),
+authRoutes.post('/registration', isNotSpam('register', 10, 5),
     body('login').isLength({min: 3, max: 10}),
     body('password').isLength({min: 6, max: 20}),
     body('email').normalizeEmail().isEmail(),
@@ -57,7 +57,7 @@ authRoutes.post('/registration', isNotSpam('register', 15, 5),
 
     })
 
-authRoutes.post('/registration-confirmation', isNotSpam('confirm', 15, 5), body('code').custom(async value => {
+authRoutes.post('/registration-confirmation', isNotSpam('confirm', 10, 5), body('code').custom(async value => {
     if (await usersDBRepository.checkConfirmationCode(value) === null) {
         return Promise.reject();
     }
