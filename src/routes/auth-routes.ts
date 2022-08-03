@@ -3,7 +3,6 @@ import {authRepo} from "../domain/AuthBusiness";
 import {body, validationResult} from "express-validator";
 import {errorsAdapt} from "../utils";
 import {isAuthorized, isNotSpam} from "../middleware";
-import {bloggersRepo} from "../domain/BloggersBusiness";
 import {usersDBRepository} from "../repositories/UsersRepository";
 
 export const authRoutes = Router({})
