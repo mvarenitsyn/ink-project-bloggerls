@@ -58,7 +58,8 @@ authRoutes.post('/registration', isNotSpam('register', 10, 5),
     })
 
 authRoutes.post('/registration-confirmation', isNotSpam('confirm', 10, 5), body('code').custom(async value => {
-    if (await usersDBRepository.checkConfirmationCode(value) === null) {
+    const user = await usersDBRepository.checkConfirmationCode(value)
+    if (!user || user.emailConfirmation.isConfirmed) {
         return Promise.reject();
     }
 }), async (req: Request, res: Response) => {
