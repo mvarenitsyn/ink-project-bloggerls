@@ -35,5 +35,11 @@ export const usersDBRepository = {
     },
     checkUserEmail: async (email:string) => {
         return usersCollection.findOne({"userData.email": email});
+    },
+    checkConfirmationCode: async (code:string) => {
+        return await usersCollection.findOne({"emailConfirmation.confirmationCode": code});
+    },
+    confirmUser: async (code:string) => {
+        return await usersCollection.updateOne({"emailConfirmation.confirmationCode": code},{$set: {"emailConfirmation.isConfirmed": true}});
     }
 }
