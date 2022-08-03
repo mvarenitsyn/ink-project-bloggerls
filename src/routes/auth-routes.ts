@@ -4,6 +4,7 @@ import {body, validationResult} from "express-validator";
 import {errorsAdapt} from "../utils";
 import {isAuthorized, isNotSpam} from "../middleware";
 import {usersDBRepository} from "../repositories/UsersRepository";
+import {MailService} from "../domain/MailService";
 
 export const authRoutes = Router({})
 
@@ -69,6 +70,24 @@ authRoutes.post('/registration-confirmation', isNotSpam('confirm', 10, 5), body(
     await usersDBRepository.confirmUser(req.body.code)
     res.sendStatus(204)
 })
+
+authRoutes.post('/registration-email-resending', isNotSpam('resend', 10, 5), body('email').custom(async value => {
+    const user = await usersDBRepository.checkUserEmail(value)
+    if (!user || user.emailConfirmation.isConfirmed) {
+        return Promise.reject();
+    }
+}), async (req: Request, res: Response) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
+        return
+    }
+    const user = await usersDBRepository.checkUserEmail(req.body.email)
+    await MailService.sendEmail(req.body.email,
+        `https://ink-project-bloggerls.herokuapp.com/auth/registration-confirmation?code=${user?.emailConfirmation.confirmationCode}`)
+    res.sendStatus(204)
+})
+
 
 authRoutes.get('/login', isAuthorized, (req: Request, res: Response) => {
     res.sendStatus(200)
