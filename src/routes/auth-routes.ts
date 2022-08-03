@@ -8,7 +8,7 @@ import {MailService} from "../domain/MailService";
 
 export const authRoutes = Router({})
 
-authRoutes.post('/login',
+authRoutes.post('/login', isNotSpam('login', 10, 5),
     body('login').exists().isString(),
     body('password').exists().isString(),
     async (req: Request, res: Response) => {
@@ -75,7 +75,6 @@ authRoutes.post('/registration-confirmation', isNotSpam('confirm', 10, 5), body(
 authRoutes.post('/registration-email-resending', isNotSpam('resend', 10, 5), body('email').normalizeEmail().isEmail(), body('email').custom(async value => {
     const user = await usersDBRepository.checkUserEmail(value)
     if (user===null || (user && user.emailConfirmation.isConfirmed)) {
-        console.log(user?.emailConfirmation.isConfirmed,'not found or already confirmed',)
         return Promise.reject();
     }
 }), async (req: Request, res: Response) => {
