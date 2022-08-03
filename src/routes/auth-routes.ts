@@ -3,6 +3,8 @@ import {authRepo} from "../domain/AuthBusiness";
 import {body, validationResult} from "express-validator";
 import {errorsAdapt} from "../utils";
 import {isAuthorized, isNotSpam} from "../middleware";
+import {bloggersRepo} from "../domain/BloggersBusiness";
+import {usersDBRepository} from "../repositories/UsersRepository";
 
 export const authRoutes = Router({})
 
@@ -29,6 +31,16 @@ authRoutes.post('/registration', isNotSpam('register', 10, 5),
     body('login').isLength({min: 3, max: 10}),
     body('password').isLength({min: 6, max: 20}),
     body('email').normalizeEmail().isEmail(),
+    body('email').custom(async value => {
+        if (await usersDBRepository.checkUserEmail(value)) {
+            return Promise.reject();
+        }
+    }),
+    body('login').custom(async value => {
+        if (await usersDBRepository.getUser(value)) {
+            return Promise.reject();
+        }
+    }),
     async (req: Request, res: Response) => {
         const {login, email, password} = req.body
         const errors = validationResult(req)

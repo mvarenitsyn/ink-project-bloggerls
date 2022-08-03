@@ -25,7 +25,7 @@ export const usersDBRepository = {
         return await usersCollection.deleteOne({_id: id})
     },
 
-    getUser: async (filter: ObjectId | string | string[]) => {
+    getUser: async (filter: ObjectId | string) => {
         if(typeof filter === "string") {
             return usersCollection.findOne({"userData.login": filter});
         }
@@ -33,7 +33,7 @@ export const usersDBRepository = {
             return usersCollection.findOne({_id: filter});
         }
     },
-    checkUser: async (login:string, email:string) => {
-        return usersCollection.findOne({$or: [{"userData.login": login}, {"userData.email": email}]});
+    checkUserEmail: async (email:string) => {
+        return usersCollection.findOne({"userData.email": email});
     }
 }
