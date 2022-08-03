@@ -72,7 +72,7 @@ authRoutes.post('/registration-confirmation', isNotSpam('confirm', 10, 5), body(
     res.sendStatus(204)
 })
 
-authRoutes.post('/registration-email-resending', isNotSpam('resend', 10, 5), body('email').custom(async value => {
+authRoutes.post('/registration-email-resending', isNotSpam('resend', 10, 5), body('email').normalizeEmail().isEmail(), body('email').custom(async value => {
     const user = await usersDBRepository.checkUserEmail(value)
     if (user===null || (user && user.emailConfirmation.isConfirmed)) {
         console.log(user?.emailConfirmation.isConfirmed,'not found or already confirmed',)
