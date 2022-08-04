@@ -54,7 +54,12 @@ export const authRepo = {
 
    updateConfirmationCode: async (email: string) => {
        const code = await usersRepo.updateUserConfirmationCode(email)
-       return await MailService.sendEmail(email, `https://ink-project-bloggerls.herokuapp.com/auth/registration-confirmation?code=${code}`)
+       try {
+           return await MailService.sendEmail(email, `https://ink-project-bloggerls.herokuapp.com/auth/registration-confirmation?code=${code}`)
+       }
+       catch (e) {
+           throw e
+       }
    }
 
 
