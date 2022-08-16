@@ -4,6 +4,7 @@ import {body, cookie, validationResult} from "express-validator";
 import {errorsAdapt} from "../utils";
 import {isAuthorized, isNotSpam, isValidRefreshToken} from "../middleware";
 import {usersDBRepository} from "../repositories/UsersRepository";
+import {toUnicode} from "punycode";
 
 
 export const authRoutes = Router({})
@@ -26,6 +27,7 @@ authRoutes.post('/login', isNotSpam('login', 10, 5),
                 {
                     maxAge: 20000,
                     httpOnly: true,
+                    secure: true
                 }
                 )
             .status(200)
@@ -104,6 +106,7 @@ authRoutes.post('/refresh-token', isValidRefreshToken,
             {
                 maxAge: 20000,
                 httpOnly: true,
+                secure: true
             }
         )
             .status(200)
