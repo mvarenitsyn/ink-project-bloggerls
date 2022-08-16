@@ -46,3 +46,11 @@ export type logDBtype = {
     ip: string,
     time: Date
 }
+
+export type refreshToken = {
+    _id: ObjectId,
+    token: string,
+    validUntil: Date,
+    valid: boolean,
+    user: string
+}

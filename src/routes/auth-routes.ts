@@ -1,10 +1,10 @@
 import {Response, Request, Router} from "express";
 import {authRepo} from "../domain/AuthBusiness";
-import {body, validationResult} from "express-validator";
+import {body, cookie, validationResult} from "express-validator";
 import {errorsAdapt} from "../utils";
-import {isAuthorized, isNotSpam} from "../middleware";
+import {isAuthorized, isNotSpam, isValidRefreshToken} from "../middleware";
 import {usersDBRepository} from "../repositories/UsersRepository";
-import {MailService} from "../domain/MailService";
+
 
 export const authRoutes = Router({})
 
@@ -21,7 +21,16 @@ authRoutes.post('/login', isNotSpam('login', 10, 5),
         const {login, password} = req.body
         const {loggedIn, userId} = await authRepo.checkUserCredentials(login, password)
         if (loggedIn) {
-            res.status(200).json({"token": authRepo.createJWT(userId)})
+            const refreshToken = await authRepo.createRefreshToken(userId)
+            res.cookie('refreshToken', refreshToken,
+                {
+                    maxAge: 20000,
+                    httpOnly: true,
+                }
+                )
+            .status(200)
+            .json({"accessToken": authRepo.createJWT(userId)})
+
             return
         }
         res.sendStatus(401)
@@ -87,7 +96,37 @@ authRoutes.post('/registration-email-resending', isNotSpam('resend', 10, 5), bod
     res.sendStatus(204)
 })
 
+authRoutes.post('/refresh-token', isValidRefreshToken,
+    async (req: Request, res: Response) => {
+        const userId = req.currentUser!._id.toString()
+        const refreshToken = await authRepo.createRefreshToken(userId)
+        res.cookie('refreshToken', refreshToken,
+            {
+                maxAge: 20000,
+                httpOnly: true,
+            }
+        )
+            .status(200)
+            .json({"accessToken": authRepo.createJWT(userId)})
 
-authRoutes.get('/login', isAuthorized, (req: Request, res: Response) => {
-    res.sendStatus(200)
+        return
+
+})
+
+authRoutes.post('/logout', isValidRefreshToken,
+    async (req: Request, res: Response) => {
+        await authRepo.deactivateToken(req.cookies.refreshToken)
+        res.sendStatus(204)
+        return
+
+    })
+
+authRoutes.get('/me', isAuthorized,
+    (req: Request, res: Response) => {
+    const user = req.currentUser
+    res.status(200).json({
+        "email": user?.userData.email,
+        "login": user?.userData.login,
+        "userId": user?._id
+    })
 })

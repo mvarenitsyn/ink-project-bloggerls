@@ -81,6 +81,18 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
     }
 }
 
+export const isValidRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.refreshToken
+    const userId = refreshToken ? await authRepo.refreshToken(refreshToken) : false
+    if(userId) {
+        req.currentUser = await usersRepo.getUserById(userId)
+        next()
+        return
+    }
+    res.sendStatus(401)
+    return
+}
+
 export const isNotSpam = (action:string, time: number = 10, limit: number = 5) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const logs = userServices.getRequests(action, req.ip, sub(new Date(), {seconds: time}))

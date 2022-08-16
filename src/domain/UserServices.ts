@@ -12,9 +12,6 @@ export const userServices = {
         return await bcrypt.compare(password, hash)
     },
 
-    checkRequestsAmount: async(action:string, ip: string, countLimit: number, timeLimit: number) => {
-
-    },
 
     logRequest: (action:string, ip:string, time: Date) => {
         const newLog = {

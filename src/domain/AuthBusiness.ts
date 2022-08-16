@@ -3,8 +3,11 @@ import {userServices} from "./UserServices";
 import 'dotenv/config'
 import jwt, {Secret} from "jsonwebtoken"
 import {MailService} from "./MailService";
-import {usersDBRepository} from "../repositories/UsersRepository";
-import {usersCollection} from "../db/data";
+import {v4 as uuidv4} from "uuid"
+import {refreshToken} from "../db/types";
+import {ObjectId} from "mongodb";
+import add from "date-fns/add";
+import {tokensRepository} from "../repositories/TokensRepository";
 
 const secret = process.env.JWT_SECRET
 
@@ -18,7 +21,7 @@ export const authRepo = {
         return {loggedIn: false, userId: ''}
     },
     createJWT: (id: string) => {
-        return jwt.sign({id: id}, secret as Secret, {expiresIn: '1h'})
+        return jwt.sign({id: id}, secret as Secret, {expiresIn: 10000})
     },
     getUserIdByToken: (token: string) => {
         interface JwtPayload {
@@ -51,6 +54,50 @@ export const authRepo = {
 
 
     },
+
+    createRefreshToken: async(userId: string) => {
+        try {
+            const tokenId = uuidv4().toString()
+            const newToken:refreshToken = {
+                _id: new ObjectId(),
+                token: tokenId,
+                valid: true,
+                validUntil: add(new Date(), {
+                    seconds: 20
+                }),
+                user: userId
+            }
+            await tokensRepository.createToken(newToken)
+            return tokenId
+        } catch (e) {
+            return null
+        }
+
+    },
+
+    refreshToken: async(tokenId: string) => {
+      try {
+          const token = await tokensRepository.getTokenData(tokenId)
+          if(token && token.validUntil > new Date() && token.valid) {
+              await tokensRepository.deactivateToken(tokenId)
+              return token.user
+          } else {
+              return false
+          }
+
+      } catch (e) {
+          return false
+      }
+    },
+
+    deactivateToken: async (tokenId: string) => {
+      try {
+          return tokensRepository.deactivateToken(tokenId)
+      } catch (e) {
+          return false
+      }
+    },
+
 
    updateConfirmationCode: async (email: string) => {
        const code = await usersRepo.updateUserConfirmationCode(email)
