@@ -20,8 +20,8 @@ export const authRepo = {
         }
         return {loggedIn: false, userId: ''}
     },
-    createJWT: (id: string) => {
-        return jwt.sign({id: id}, secret as Secret, {expiresIn: 10000})
+    createJWT: (id: string, timeout:number=10000) => {
+        return jwt.sign({id: id}, secret as Secret, {expiresIn: timeout})
     },
     getUserIdByToken: (token: string) => {
         interface JwtPayload {
@@ -55,9 +55,9 @@ export const authRepo = {
 
     },
 
-    createRefreshToken: async(userId: string) => {
+    createRefreshToken: async(userId: string, timeout:number = 20000) => {
         try {
-            const tokenId = uuidv4().toString()
+            const tokenId = jwt.sign({id: userId}, secret as Secret, {expiresIn: timeout})
             const newToken:refreshToken = {
                 _id: new ObjectId(),
                 token: tokenId,
@@ -77,10 +77,14 @@ export const authRepo = {
 
     refreshToken: async(tokenId: string) => {
       try {
+          interface JwtPayload {
+              id: string
+          }
+          const {id} = jwt.verify(tokenId, secret as Secret) as JwtPayload
           const token = await tokensRepository.getTokenData(tokenId)
-          if(token && token.validUntil > new Date() && token.valid) {
+          if(id && token && token && token.validUntil > new Date() && token.valid) {
               await tokensRepository.deactivateToken(tokenId)
-              return token.user
+              return id
           } else {
               return false
           }
