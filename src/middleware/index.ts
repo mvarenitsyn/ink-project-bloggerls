@@ -93,10 +93,20 @@ export const isValidRefreshToken = async (req: Request, res: Response, next: Nex
 }
 
 export const addUserCredentials = async (req: Request, res: Response, next: NextFunction) => {
-    const refreshToken = req.cookies.refreshToken
-    const userId = refreshToken ? await authRepo.getUserIdByToken(refreshToken) : false
-    if(userId) {
-        req.currentUser = await usersRepo.getUserById(userId)
+    if (!req.headers.authorization) {
+        res.sendStatus(401)
+        return
+    }
+
+    const authType: string | undefined = req.headers.authorization?.split(" ")[0].toString() || undefined
+    const authPhrase: string = req.headers.authorization?.split(" ")[1].toString()
+
+    if (authType === 'Bearer') {
+        const userId = authRepo.getUserIdByToken(authPhrase)
+        if (userId) {
+            req.currentUser = await usersRepo.getUserById(userId)
+
+        }
     }
     next()
     return
