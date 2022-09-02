@@ -126,7 +126,6 @@ postsRouter.put('/:postId/like-status', isAuthorized, isValidPost, body('likeSta
     async (req: Request, res: Response) => {
         const {likeStatus} = req.body
         const errors = validationResult(req)
-        console.log(req.currentUser)
 
         if (!errors.isEmpty()) {
             res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
