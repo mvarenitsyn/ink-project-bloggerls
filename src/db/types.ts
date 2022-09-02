@@ -61,6 +61,6 @@ export type like = {
     addedAt: Date,
     userId: string,
     login: string,
-    status: string,
+    myStatus: string,
     parentId: string
 }

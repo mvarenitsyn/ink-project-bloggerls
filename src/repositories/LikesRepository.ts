@@ -55,8 +55,8 @@ export class Likes {
     }
 
     async getStatus(): Promise<string> {
-        const status = await LikesModel.findOne().and([{parentId: this.parentId},{userId: this.userData?.userId}]).select('status -_id').lean().exec()
-        return status ? status.status : 'None'
+        const status = await LikesModel.findOne().and([{parentId: this.parentId},{userId: this.userData?.userId}]).select('myStatus -_id').lean().exec()
+        return status ? status.myStatus : 'None'
     }
     async deleteAll(): Promise<any> {
         return await LikesModel.deleteMany({parentId: this.parentId}).lean().exec()
@@ -124,8 +124,8 @@ export class LikesRepository {
     }
 
     async getStatus(userId: string): Promise<string> {
-        const status = await LikesModel.findOne({userId: userId}).select('status -_id').lean().exec()
-        return status ? status.status : 'None'
+        const status = await LikesModel.findOne({userId: userId}).select('myStatus -_id').lean().exec()
+        return status ? status.myStatus : 'None'
     }
     async deleteAll(parentId: string): Promise<any> {
         return await LikesModel.deleteMany({parentId: parentId}).lean().exec()

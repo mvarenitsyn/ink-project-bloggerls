@@ -68,7 +68,7 @@ export const LikeSchema = new Schema<like>(
         addedAt: Date,
         userId: String,
         login: String,
-        status: String,
+        myStatus: String,
         parentId: String
     }
 )
