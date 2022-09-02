@@ -56,7 +56,7 @@ export class Likes {
 
     async getStatus(): Promise<string> {
         const status = await LikesModel.findOne().and([{parentId: this.parentId},{userId: this.userData?.userId}]).select('status -_id').lean().exec()
-        console.log('Get status – '+status?.status)
+        console.log('Getting status for post – '+this.parentId+' .Status is '+status?.status+' and current user is '+ this.userData?.userId)
         return status ? status.status : 'None'
     }
     async deleteAll(): Promise<any> {
