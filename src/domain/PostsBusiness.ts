@@ -14,13 +14,13 @@ export const postsBusiness = {
         for (const post of postsData[1]) {
 
             let postLikes = user ? new Likes(post.id, {userId: user._id, login: user.userData.login}) : new Likes(post.id)
-            const myStatus = !user ? 'None' : await postLikes.getStatus()
+            const currentUserStatus = !user ? 'None' : await postLikes.getStatus()
             newA.push({
                 ...post._doc,
                 extendedLikesInfo: {
                     likesCount: await postLikes.getLikesCount(),
                     dislikesCount: await postLikes.getDislikesCount(),
-                    status: myStatus,
+                    myStatus: currentUserStatus,
                     newestLikes: await postLikes.list(3)
                 }
             })
@@ -83,12 +83,12 @@ export const postsBusiness = {
 
         if(!post) return null
 
-        const myStatus = await postLikes.getStatus()
+        const currentUserStatus = await postLikes.getStatus()
         const newestLikes:like[] = await postLikes.list(3)
         post.extendedLikesInfo = {
             likesCount: await postLikes.getLikesCount(),
             dislikesCount: await postLikes.getDislikesCount(),
-            myStatus: myStatus,
+            myStatus: currentUserStatus,
             newestLikes: newestLikes.map(like => {
                 return {
                     "addedAt": like.addedAt,
