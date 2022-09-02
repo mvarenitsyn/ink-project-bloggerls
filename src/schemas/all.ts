@@ -43,6 +43,7 @@ export const postSchema = new Schema<postInterface>(
     {
         _id: ObjectId,
         id: String,
+        addedAt: Date,
         title: String,
         shortDescription: String,
         content: String,

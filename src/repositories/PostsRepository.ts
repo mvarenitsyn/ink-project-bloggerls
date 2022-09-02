@@ -43,6 +43,7 @@ export const postsRepo = {
         return await newPost.save().then(result => {
             return {
                 "id": post.id,
+                "addedAt": post.addedAt,
                 "title": post.title,
                 "shortDescription": post.shortDescription,
                 "content": post.content,
@@ -50,7 +51,7 @@ export const postsRepo = {
                 "bloggerName": post.bloggerName
             }
         }).catch(err => {
-            return false
+            return {}
         })
 
     },

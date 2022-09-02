@@ -52,11 +52,13 @@ export const postsBusiness = {
             "shortDescription": shortDescription,
             "content": content,
             "bloggerId": bloggerId.toString(),
+            "addedAt": new Date(),
             "bloggerName" : blogger?.name || ''
         }
-        await postsRepo.createPost(newPost)
+        const createdPost = await postsRepo.createPost(newPost)
+        if(createdPost)
         return {
-            ...newPost,
+            ...createdPost,
             extendedLikesInfo : {
                 "likesCount": 0,
                 "dislikesCount": 0,

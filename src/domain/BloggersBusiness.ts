@@ -57,6 +57,7 @@ export const bloggersRepo = {
         const blogger = await bloggersRepo.getBloggerById(bloggerId)
         const newPost = {
             "_id": new ObjectId(),
+            "addedAt": new Date(),
             "id": Number(new Date()).toString(),
             "title": title,
             "shortDescription": shortDescription,
