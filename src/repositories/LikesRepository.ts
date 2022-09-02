@@ -19,7 +19,7 @@ export class Likes {
 
     async like(): Promise<boolean> {
         const query = await LikesModel.updateOne({$and: [{parentId: this.parentId}, {userId: this.userData?.userId}]}, {
-            status: 'Like',
+            myStatus: 'Like',
             addedAt: new Date(),
             userId: this.userData?.userId,
             login: this.userData?.login,
@@ -33,7 +33,7 @@ export class Likes {
 
     async reset(): Promise<boolean> {
         const query = await LikesModel.updateOne({$and: [{parentId: this.parentId}, {userId: this.userData?.userId}]}, {
-            status: 'None',
+            myStatus: 'None',
             addedAt: new Date(),
             userId: this.userData?.userId,
             login: this.userData?.login,
@@ -45,7 +45,7 @@ export class Likes {
     async dislike(): Promise<boolean> {
 
         const query = await LikesModel.updateOne({$and: [{parentId: this.parentId}, {userId: this.userData?.userId}]}, {
-            status: 'Dislike',
+            myStatus: 'Dislike',
             addedAt: new Date(),
             userId: this.userData?.userId,
             login: this.userData?.login,
@@ -63,11 +63,11 @@ export class Likes {
     }
 
     async getLikesCount(): Promise<number> {
-        return await LikesModel.where({'parentId': this.parentId}).where({'status': 'Like'}).countDocuments().exec()
+        return await LikesModel.where({'parentId': this.parentId}).where({'myStatus': 'Like'}).countDocuments().exec()
     }
 
     async getDislikesCount(): Promise<number> {
-        return await LikesModel.where({'parentId': this.parentId}).where({'status': 'Dislike'}).countDocuments().exec()
+        return await LikesModel.where({'parentId': this.parentId}).where({'myStatus': 'Dislike'}).countDocuments().exec()
     }
 
 
