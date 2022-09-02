@@ -21,7 +21,7 @@ export const authRepo = {
         return {loggedIn: false, userId: ''}
     },
     createJWT: (id: string) => {
-        return jwt.sign({id: id}, secret as Secret, {expiresIn: '500s'})
+        return jwt.sign({id: id}, secret as Secret, {expiresIn: '10s'})
     },
     getUserIdByToken: (token: string) => {
         interface JwtPayload {
