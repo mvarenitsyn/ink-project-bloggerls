@@ -96,7 +96,7 @@ export const addUserCredentials = async (req: Request, res: Response, next: Next
 
 
     const authType: string | undefined = req.headers.authorization?.split(" ")[0].toString() || undefined
-    const authPhrase: string | undefined = req.headers.authorization?.split(" ")[1].toString()
+    const authPhrase: string | undefined = req.headers.authorization?.split(" ")[1].toString() || undefined
 
     if (authType === 'Bearer' && authPhrase) {
         const userId = authRepo.getUserIdByToken(authPhrase)
