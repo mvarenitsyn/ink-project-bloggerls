@@ -54,9 +54,8 @@ export class Likes {
         return query.modifiedCount === 1
     }
 
-    async getStatus(): Promise<string> {
-        const status = await LikesModel.findOne().and([{parentId: this.parentId},{userId: this.userData?.userId}]).select('myStatus -_id').lean().exec()
-        return status ? status.myStatus : 'None'
+    async getStatus(): Promise<like | null> {
+        return await LikesModel.findOne({parentId: this.parentId}).where({userId: this.userData?.userId}).lean().exec()
     }
     async deleteAll(): Promise<any> {
         return await LikesModel.deleteMany({parentId: this.parentId}).lean().exec()
