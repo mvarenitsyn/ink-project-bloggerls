@@ -77,6 +77,9 @@ export const postsBusiness = {
     getPostById: async (id:string, user?: userDBtype | null) => {
         const postLikes = user ? new Likes(id, {userId: user._id, login: user.userData.login}) : new Likes(id)
         const post =  {...await postsRepo.getPostById(id)}
+
+        if(!post) return null
+
         const myStatus = !user ? 'None' : await postLikes.getStatus()
         const newestLikes:like[] = await postLikes.list(3)
         post.extendedLikesInfo = {
