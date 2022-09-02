@@ -12,7 +12,8 @@ export const postsBusiness = {
         const newA:any = []
 
         for (const post of postsData[1]) {
-            let postLikes = new Likes(post.id)
+
+            let postLikes = user ? new Likes(post.id, {userId: user._id, login: user.userData.login}) : new Likes(post.id)
             const myStatus = !user ? 'None' : await postLikes.getStatus()
             newA.push({
                 ...post._doc,
