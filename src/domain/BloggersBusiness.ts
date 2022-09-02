@@ -65,14 +65,16 @@ export const bloggersRepo = {
             "bloggerId": bloggerId,
             "bloggerName" : blogger!.name
         }
-        await postsRepo.createPost(newPost)
+        const createdPost = await postsRepo.createPost(newPost)
         return {
-            "bloggerId": newPost.bloggerId.toString(),
-            "bloggerName": newPost.bloggerName,
-            "content": newPost.content,
-            "id": newPost.id.toString(),
-            "shortDescription": newPost.shortDescription,
-            "title": newPost.title
+            ...createdPost,
+            extendedLikesInfo : {
+                "likesCount": 0,
+                "dislikesCount": 0,
+                "myStatus": "None",
+                "newestLikes": [
+                ]
+            }
         }
     }
 
