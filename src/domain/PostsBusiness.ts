@@ -84,7 +84,6 @@ export const postsBusiness = {
         if(!post) return null
 
         const myStatus = !user ? 'None' : await postLikes.getStatus()
-        console.log(myStatus, user?._id, id, '----Debug')
         const newestLikes:like[] = await postLikes.list(3)
         post.extendedLikesInfo = {
             likesCount: await postLikes.getLikesCount(),

@@ -43,6 +43,7 @@ export class Likes {
     }
 
     async dislike(): Promise<boolean> {
+        console.log('This is Dislike! User: '+this.userData?.userId)
         const query = await LikesModel.updateOne({$and: [{parentId: this.parentId}, {userId: this.userData?.userId}]}, {
             status: 'Dislike',
             addedAt: new Date(),
