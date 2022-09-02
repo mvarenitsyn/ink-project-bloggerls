@@ -93,15 +93,12 @@ export const isValidRefreshToken = async (req: Request, res: Response, next: Nex
 }
 
 export const addUserCredentials = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.headers.authorization) {
-        res.sendStatus(401)
-        return
-    }
+
 
     const authType: string | undefined = req.headers.authorization?.split(" ")[0].toString() || undefined
-    const authPhrase: string = req.headers.authorization?.split(" ")[1].toString()
+    const authPhrase: string | undefined = req.headers.authorization?.split(" ")[1].toString()
 
-    if (authType === 'Bearer') {
+    if (authType === 'Bearer' && authPhrase) {
         const userId = authRepo.getUserIdByToken(authPhrase)
         if (userId) {
             req.currentUser = await usersRepo.getUserById(userId)
