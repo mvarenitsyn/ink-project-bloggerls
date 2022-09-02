@@ -102,7 +102,6 @@ export const addUserCredentials = async (req: Request, res: Response, next: Next
         const userId = authRepo.getUserIdByToken(authPhrase)
         if (userId) {
             req.currentUser = await usersRepo.getUserById(userId)
-
         }
     }
     next()
