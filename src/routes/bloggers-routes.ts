@@ -4,7 +4,7 @@ import {body, query, validationResult} from 'express-validator'
 
 import {bloggersRepo} from "../domain/BloggersBusiness";
 import {errorsAdapt} from "../utils";
-import {isAuthorized, isValidBlogger} from "../middleware";
+import {addUserCredentials, isAuthorized, isValidBlogger} from "../middleware";
 
 export const bloggersRouter = Router({})
 
@@ -74,7 +74,7 @@ bloggersRouter.put('/:id', isAuthorized, isValidBlogger,
 
     })
 
-bloggersRouter.get('/:bloggerId/posts', isValidBlogger,
+bloggersRouter.get('/:bloggerId/posts', isValidBlogger, addUserCredentials,
     query('PageNumber').isInt().optional({checkFalsy: true}),
     query('PageSize').isInt().optional({checkFalsy: true}),
 
@@ -87,7 +87,7 @@ bloggersRouter.get('/:bloggerId/posts', isValidBlogger,
             res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
             return
         }
-        res.status(200).send(await bloggersRepo.getBloggerPosts(pageNumber, pageSize, req.params.bloggerId))
+        res.status(200).send(await bloggersRepo.getBloggerPosts(pageNumber, pageSize, req.params.bloggerId, req.currentUser || null))
 
         return
     })
@@ -102,7 +102,7 @@ bloggersRouter.post('/:bloggerId/posts', isAuthorized, isValidBlogger,
             res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
             return
         }
-        res.status(201).send(await bloggersRepo.createBloggerPost(title, shortDescription, content, req.params.bloggerId))
+        res.status(201).send(await bloggersRepo.createBloggerPost(title, shortDescription, content, req.params.bloggerId, req.currentUser || null))
 
         return
     })

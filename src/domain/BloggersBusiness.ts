@@ -1,6 +1,8 @@
 import {bloggersDBRepository} from "../repositories/BloggersRepository";
 import {ObjectId} from "mongodb";
 import {postsRepo} from "../repositories/PostsRepository";
+import {userDBtype} from "../db/types";
+import {Likes} from "../repositories/LikesRepository";
 
 export const bloggersRepo = {
 
@@ -42,18 +44,34 @@ export const bloggersRepo = {
         return await bloggersDBRepository.getBloggerById(id)
     },
 
-    getBloggerPosts: async (pageNumber: number = 1, pageSize: number = 10, bloggerId: string) => {
+    getBloggerPosts: async (pageNumber: number = 1, pageSize: number = 10, bloggerId: string, user?: userDBtype | null) => {
         const postsData = await postsRepo.getPosts(pageNumber, pageSize, bloggerId)
         const pagesCount = Math.ceil(postsData[0] / pageSize)
+        const newA:any = []
+
+        for (const post of postsData[1]) {
+            let postLikes = new Likes(post.id)
+            const myStatus = !user ? 'None' : await postLikes.getStatus()
+            newA.push({
+                ...post._doc,
+                extendedLikesInfo: {
+                    likesCount: await postLikes.getLikesCount(),
+                    dislikesCount: await postLikes.getDislikesCount(),
+                    status: myStatus,
+                    newestLikes: await postLikes.list(3)
+                }
+            })
+        }
+
         return {
             "pagesCount": pagesCount,
             "page": pageNumber,
             "pageSize": pageSize,
             "totalCount": postsData[0],
-            "items": postsData[1]
+            "items": newA
         }
     },
-    createBloggerPost: async (title: string, shortDescription: string, content: string, bloggerId: string) => {
+    createBloggerPost: async (title: string, shortDescription: string, content: string, bloggerId: string, user?: userDBtype | null) => {
         const blogger = await bloggersRepo.getBloggerById(bloggerId)
         const newPost = {
             "_id": new ObjectId(),
