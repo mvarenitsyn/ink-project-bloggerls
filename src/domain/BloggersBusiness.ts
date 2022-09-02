@@ -57,7 +57,7 @@ export const bloggersRepo = {
                 extendedLikesInfo: {
                     likesCount: await postLikes.getLikesCount(),
                     dislikesCount: await postLikes.getDislikesCount(),
-                    status: myStatus,
+                    "myStatus": myStatus,
                     newestLikes: await postLikes.list(3)
                 }
             })
