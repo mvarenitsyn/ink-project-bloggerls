@@ -1,16 +1,17 @@
 import {Request, Response, Router} from "express";
 
 import {param, body, query, validationResult} from 'express-validator'
-import {isAuthorized, isValidPost} from "../middleware";
+import {addUserCredentials, isAuthorized, isValidPost} from "../middleware";
 import {errorsAdapt, validateSeq} from "../utils";
 import {bloggersRepo} from "../domain/BloggersBusiness";
 import {postsBusiness} from "../domain/PostsBusiness";
 import {commentsRepo} from "../domain/CommentsBusiness";
+import {authRepo} from "../domain/AuthBusiness";
 
 
 export const postsRouter = Router({})
 
-postsRouter.get('/',
+postsRouter.get('/', addUserCredentials,
     query('PageNumber').isInt().optional({checkFalsy: true}),
     query('PageSize').isInt().optional({checkFalsy: true}),
     async (req: Request, res: Response) => {
@@ -23,19 +24,17 @@ postsRouter.get('/',
             return
         }
 
-        res.status(200).send(await postsBusiness.getPosts(pageNumber, pageSize))
+        res.status(200).send(await postsBusiness.getPosts(pageNumber, pageSize, req.currentUser || null))
         return
     })
 
-postsRouter.get('/:id', isValidPost, async (req: Request, res: Response) => {
-
+postsRouter.get('/:id', isValidPost, addUserCredentials, async (req: Request, res: Response) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
         res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
         return
     }
-
-    res.status(200).send(await postsBusiness.getPostById(req.params.id))
+    res.status(200).send(await postsBusiness.getPostById(req.params.id, req.currentUser || null))
     return
 })
 
@@ -86,6 +85,7 @@ postsRouter.post('/:postId/comments', isAuthorized, validateSeq([
     async (req: Request, res: Response) => {
         const {content} = req.body
         const errors = validationResult(req)
+        console.log(req.currentUser)
 
         if (!errors.isEmpty()) {
             res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
@@ -120,6 +120,27 @@ postsRouter.put('/:id', isAuthorized, isValidPost,
         res.sendStatus(204)
         res.end()
     })
+
+
+postsRouter.put('/:postId/like-status', isAuthorized, isValidPost, body('likeStatus').isIn(['Like', 'Dislike', 'None']),
+    async (req: Request, res: Response) => {
+        const {likeStatus} = req.body
+        const errors = validationResult(req)
+        console.log(req.currentUser)
+
+        if (!errors.isEmpty()) {
+            res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
+            return
+        }
+        if (req.currentUser) {
+            await postsBusiness.setLike(req.params.postId, likeStatus, req.currentUser)
+            res.sendStatus(204)
+            return
+        }
+        res.sendStatus(401)
+        return
+    })
+
 
 postsRouter.delete('/:id', isAuthorized, isValidPost, async (req: Request, res: Response) => {
     const errors = validationResult(req)

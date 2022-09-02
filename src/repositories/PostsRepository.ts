@@ -1,48 +1,46 @@
-
-import {postsCollection} from "../db/data";
-import {postInterface} from "../db/types";
+import {PostModel, postsCollection, UserModel} from "../db/data";
+import {postInterface, userDBtype} from "../db/types";
 
 export const postsRepo = {
 
-    getPosts: async (pageNum: number, pageSize: number, bloggerId?:string): Promise<[number, Object[]]> => {
-        const filter = bloggerId ? {bloggerId: bloggerId} :{}
+    getPosts: async (pageNum: number, pageSize: number, bloggerId?: string):Promise<[number, postInterface[]]> => {
+        const filter = bloggerId ? {bloggerId: bloggerId} : {}
 
-        const resultCount = await postsCollection.countDocuments(filter)
-        const posts = await postsCollection.find(filter, {projection: {_id: 0}})
+        const resultCount = await PostModel.countDocuments(filter)
+        const posts = await PostModel.find(filter).select('-_id -__v')
             .skip((pageNum - 1) * pageSize)
             .limit(pageSize)
-            .toArray()
+            .exec()
         return [resultCount, posts]
     },
 
     getPostById: async (id: string) => {
         const filter = {id: id}
-        return await postsCollection.findOne(filter, {projection: {_id: 0}})
+        return PostModel.findOne(filter).select('-_id -__v').lean().exec()
     },
 
     deletePostById: async (id: string) => {
         const filter = {id: id}
-        await postsCollection.deleteOne(filter)
-        return
+        return PostModel.deleteOne(filter)
     },
 
     updatePostById: async (id: string, title: string, shortDescription: string, content: string, bloggerId: string, bloggerName: string | undefined) => {
         const filter = {id: id}
-        await postsCollection.updateOne(filter, {
-            $set: {
-                title: title,
-                shortDescription: shortDescription,
-                content: content,
-                bloggerId: bloggerId,
-                bloggerName: bloggerName
-            }
+        await PostModel.updateOne(filter, {
+            title: title,
+            shortDescription: shortDescription,
+            content: content,
+            bloggerId: bloggerId,
+            bloggerName: bloggerName
         })
         return
     },
 
     createPost: async (post: postInterface) => {
-        try {
-            await postsCollection.insertOne(post)
+
+        //await PostModel.insertOne(post)
+        const newPost = new PostModel(post)
+        return await newPost.save().then(result => {
             return {
                 "id": post.id,
                 "title": post.title,
@@ -51,11 +49,11 @@ export const postsRepo = {
                 "bloggerId": post.bloggerId,
                 "bloggerName": post.bloggerName
             }
-        }
-        catch (err) {
-            console.log(err)
-        }
+        }).catch(err => {
+            return false
+        })
 
     },
+
 
 }

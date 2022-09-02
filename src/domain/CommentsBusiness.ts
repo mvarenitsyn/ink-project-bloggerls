@@ -13,9 +13,9 @@ export const commentsRepo = {
             postId: postId
         }
         const result = await commentsRepository.createComment(newComment)
-        if (result.acknowledged) {
+        if (result) {
             return {
-                id: result.insertedId,
+                id: result,
                 content: newComment.content,
                 userId: newComment.userId,
                 userLogin: newComment.userLogin,

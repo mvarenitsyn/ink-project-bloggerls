@@ -12,7 +12,7 @@ export type commentDBType = {
     "userId": string,
     "userLogin": string,
     "addedAt": Date,
-    "postId": string
+    "postId": string,
 }
 
 export type userDBtype = {
@@ -53,4 +53,13 @@ export type refreshToken = {
     validUntil: Date,
     valid: boolean,
     user: string
+}
+
+export type like = {
+    _id: ObjectId,
+    addedAt: Date,
+    userId: string,
+    login: string,
+    status: string,
+    parentId: string
 }

@@ -24,9 +24,9 @@ export const usersRepo = {
                 isConfirmed: false
             }
         })
-        if(result.insertedId) {
+        if(result) {
             return {
-                "id": result.insertedId.toString(),
+                "id": result.toString(),
                 "login": login
             }
         } else return null

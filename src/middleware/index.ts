@@ -38,7 +38,6 @@ export const isValidUserId = async (req: Request, res: Response, next: NextFunct
 export const isValidPost = async (req: Request, res: Response, next: NextFunction) => {
     const postId = req.params.postId || req.params.id || null
     const exist = postId ? await postsBusiness.getPostById(postId) : null
-    console.log(exist)
     if (!exist) {
         res.status(404)
         res.end()
@@ -90,6 +89,16 @@ export const isValidRefreshToken = async (req: Request, res: Response, next: Nex
         return
     }
     res.sendStatus(401)
+    return
+}
+
+export const addUserCredentials = async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.refreshToken
+    const userId = refreshToken ? await authRepo.getUserIdByToken(refreshToken) : false
+    if(userId) {
+        req.currentUser = await usersRepo.getUserById(userId)
+    }
+    next()
     return
 }
 

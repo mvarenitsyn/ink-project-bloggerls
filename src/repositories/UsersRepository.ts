@@ -1,7 +1,59 @@
 import {userDBtype} from "../db/types";
-import {usersCollection} from "../db/data";
+import {UserModel, usersCollection} from "../db/data";
 import {ObjectId} from "mongodb";
 
+export const usersDBRepository = {
+    createUser: async (newUser: userDBtype) => {
+        const user = new UserModel(newUser)
+        return await user.save().then(result => {
+            return result._id
+        }).catch(err => {
+            return false
+        })
+
+
+    },
+    getUsers: async (pageNumber: number = 1, pageSize: number = 10): Promise<object[]> => {
+        const users = await UserModel.find({})
+            .skip((pageNumber-1)*pageSize)
+            .limit(pageSize)
+            .lean()
+
+        return users.map(user => {
+            return {id: user._id.toString(), login: user.userData.login}
+        })
+
+    },
+    countUsers: async (filter: Object) => {
+        return UserModel.estimatedDocumentCount(filter)
+    },
+    deleteUser: async (id: ObjectId) => {
+        return UserModel.deleteOne({_id: id});
+    },
+    getUser: async (filter: ObjectId | string) => {
+        if(typeof filter === "string") {
+            return UserModel.findOne({"userData.login": filter});
+        }
+        else {
+            return UserModel.findOne({_id: filter});
+        }
+    },
+    checkUserEmail: async (email:string) => {
+        return UserModel.findOne({"userData.email": email});
+    },
+    checkConfirmationCode: async (code:string) => {
+        return UserModel.findOne({"emailConfirmation.confirmationCode": code});
+    },
+    confirmUser: async (code:string) => {
+        return UserModel.updateOne({"emailConfirmation.confirmationCode": code}, {$set: {"emailConfirmation.isConfirmed": true}});
+    },
+    updateConfirmationCode: async (email: string, code: string) => {
+        return UserModel.updateOne({"userData.email": email}, {$set: {"emailConfirmation.confirmationCode": code}});
+    }
+
+}
+
+/*
 export const usersDBRepository = {
     createUser: async (newUser: userDBtype) => {
         return await usersCollection.insertOne(newUser)
@@ -45,4 +97,4 @@ export const usersDBRepository = {
     updateConfirmationCode: async (email: string, code: string) => {
         return await usersCollection.updateOne({"userData.email": email}, {$set: {"emailConfirmation.confirmationCode": code}})
     }
-}
+}*/

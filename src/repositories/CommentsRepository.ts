@@ -1,13 +1,18 @@
 import {commentDBType} from "../db/types";
-import {commentsCollection} from "../db/data";
+import {CommentModel, commentsCollection, UserModel} from "../db/data";
 import {ObjectId} from "mongodb";
 
 export const commentsRepository = {
     createComment: async (newComment: commentDBType) => {
-        return await commentsCollection.insertOne(newComment)
+        const comment = new CommentModel(newComment)
+        return await comment.save().then(result => {
+            return result._id
+        }).catch(err => {
+            return false
+        })
     },
     getCommentById: async (id: string) => {
-        const comments = await commentsCollection.aggregate([
+        const comments = await CommentModel.aggregate([
             {$match: {
                 _id: new ObjectId(id)
             }},
@@ -21,35 +26,35 @@ export const commentsRepository = {
                         "addedAt": 1
                     }
             },
-        ]).toArray()
+        ])
 
         return comments[0]
 
     },
     updateComment: async (id: ObjectId, content: string) => {
         console.log(id, content)
-        return await commentsCollection.updateOne({_id: id}, {$set: {content: content}})
+        return CommentModel.updateOne({_id: id}, {content: content})
     },
     deleteComment: async (id: ObjectId) => {
-        return await commentsCollection.deleteOne({_id: id})
+        return CommentModel.deleteOne({_id: id})
     },
     getCommentsByPostId: async (postId: string, pageNum: number, pageSize: number) => {
-        return await commentsCollection.find({postId: postId})
+        const comments =  await CommentModel.find({postId: postId})
             .skip((pageNum - 1) * pageSize)
             .limit(pageSize)
-            .map(comment => {
-                return {
-                    id: comment._id.toString(),
-                    content: comment.content,
-                    userId: comment.userId,
-                    userLogin: comment.userLogin,
-                    addedAt: comment.addedAt
-                }
-            })
-            .toArray()
+            .lean()
+        return comments.map(comment => {
+            return {
+                id: comment._id.toString(),
+                content: comment.content,
+                userId: comment.userId,
+                userLogin: comment.userLogin,
+                addedAt: comment.addedAt
+            }
+        })
     },
     countComments: async (filter: Object) => {
-        return commentsCollection.countDocuments(filter)
+        return CommentModel.countDocuments(filter)
     },
 }
 
