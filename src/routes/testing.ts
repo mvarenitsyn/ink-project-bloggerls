@@ -15,7 +15,7 @@ testing.delete('/all-data', async (req: Request, res: Response) => {
     await UserModel.deleteMany({})
     await CommentModel.deleteMany({})
     await RefreshTokenModel.deleteMany({})
-    await LikesModel.deleteMany({})
+    //await LikesModel.deleteMany({})
     res.sendStatus(204)
     return
 })
