@@ -34,7 +34,7 @@ postsRouter.get('/:id', isValidPost, addUserCredentials, async (req: Request, re
         res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
         return
     }
-    console.log(req.currentUser)
+
     res.status(200).send(await postsBusiness.getPostById(req.params.id, req.currentUser || null))
     return
 })
