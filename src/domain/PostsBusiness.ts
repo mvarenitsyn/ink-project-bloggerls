@@ -89,6 +89,7 @@ export const postsBusiness = {
             likesCount: await postLikes.getLikesCount(),
             dislikesCount: await postLikes.getDislikesCount(),
             myStatus: myStatus,
+            userr: user?._id || "no user",
             newestLikes: newestLikes.map(like => {
                 return {
                     "addedAt": like.addedAt,
