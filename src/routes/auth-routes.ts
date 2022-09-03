@@ -24,7 +24,7 @@ authRoutes.post('/login', isNotSpam('login', 10, 5),
             const refreshToken = await authRepo.createRefreshToken(userId)
             res.cookie('refreshToken', refreshToken,
                 {
-                    maxAge: 20000,
+                    maxAge: 90000,
                     httpOnly: true,
                     secure: true
                 }
@@ -103,7 +103,7 @@ authRoutes.post('/refresh-token', isValidRefreshToken,
         const refreshToken = await authRepo.createRefreshToken(userId)
         res.cookie('refreshToken', refreshToken,
             {
-                maxAge: 20000,
+                maxAge: 90000,
                 httpOnly: true,
                 secure: true
             }
