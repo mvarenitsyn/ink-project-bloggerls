@@ -39,7 +39,7 @@ postsRouter.get('/:id', isValidPost, addUserCredentials, async (req: Request, re
     return
 })
 
-postsRouter.get('/:postId/comments', isValidPost,
+postsRouter.get('/:postId/comments', isValidPost, addUserCredentials,
     query('PageNumber').isInt().optional({checkFalsy: true}),
     query('PageSize').isInt().optional({checkFalsy: true}),
     async (req: Request, res: Response) => {
@@ -52,7 +52,7 @@ postsRouter.get('/:postId/comments', isValidPost,
             return
         }
 
-        res.status(200).send(await commentsRepo.getCommentsByPostId(req.params.postId, pageNumber, pageSize))
+        res.status(200).send(await commentsRepo.getCommentsByPostId(req.params.postId, pageNumber, pageSize, req.currentUser))
         return
     })
 

@@ -1,6 +1,7 @@
-import {commentDBType, userDBtype} from "../db/types";
+import {commentDBType, like, userDBtype} from "../db/types";
 import {ObjectId} from "mongodb";
 import {commentsRepository} from "../repositories/CommentsRepository";
+import {Likes} from "../repositories/LikesRepository";
 
 export const commentsRepo = {
     createComment: async (postId: string, content: string, user: userDBtype) => {
@@ -20,23 +21,44 @@ export const commentsRepo = {
                 userId: newComment.userId,
                 userLogin: newComment.userLogin,
                 addedAt: newComment.addedAt,
+                likesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: 'None'
+                }
             }
         } else {
             throw new Error('Comment posting failed')
         }
     },
 
-    getCommentsByPostId: async (postId: string, pageNumber: number = 1, pageSize: number = 10) => {
+    getCommentsByPostId: async (postId: string, pageNumber: number = 1, pageSize: number = 10, user?: userDBtype | null) => {
         const userCount = await commentsRepository.countComments({postId: postId})
         const pagesCount = Math.ceil(userCount/pageSize)
         const comments = await commentsRepository.getCommentsByPostId(postId, pageNumber, pageSize)
+
+        const newA:any = []
+
+        for (const comment of comments) {
+
+            let postLikes = user ? new Likes(comment.id, {userId: user._id, login: user.userData.login}) : new Likes(comment.id)
+            const currentUserStatus = await postLikes.getStatus()
+            newA.push({
+                ...comment,
+                likesInfo: {
+                    likesCount: await postLikes.getLikesCount(),
+                    dislikesCount: await postLikes.getDislikesCount(),
+                    myStatus: currentUserStatus ? currentUserStatus.myStatus : 'None',
+                }
+            })
+        }
 
         return {
             "pagesCount": pagesCount,
             "page": pageNumber,
             "pageSize": pageSize,
             "totalCount": userCount,
-            "items": comments
+            "items": newA
         }
     },
 
@@ -47,12 +69,37 @@ export const commentsRepo = {
     async deleteComment(id: string) {
         return await commentsRepository.deleteComment(new ObjectId(id))
     },
-    async getCommentById(id: string) {
+    async getCommentById(id: string, user?: userDBtype | null) {
         try {
-            return await commentsRepository.getCommentById(id)
+            const comment = await commentsRepository.getCommentById(id)
+            const commentLikes = user ? new Likes(id, {userId: user._id, login: user.userData.login}) : new Likes(id)
+            const currentUserStatus = await commentLikes.getStatus()
+            return {
+                ...comment,
+                likesInfo: {
+                    likesCount: await commentLikes.getLikesCount(),
+                    dislikesCount: await commentLikes.getDislikesCount(),
+                    myStatus: currentUserStatus ? currentUserStatus.myStatus : 'None'
+                }
+            }
         }
         catch (e) {
             return null
         }
+    },
+
+    setLike: async (commentId: string, status: string, user: userDBtype) => {
+        const like = new Likes(commentId, {userId: user._id, login: user.userData.login})
+        switch (status) {
+            case 'Like':
+                await like.like()
+                break
+            case 'Dislike':
+                await like.dislike()
+                break
+            default:
+                await like.reset()
+        }
+
     }
 }
