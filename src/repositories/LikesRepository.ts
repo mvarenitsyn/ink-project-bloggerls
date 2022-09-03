@@ -10,7 +10,7 @@ export class Likes {
 
     async list(limit: number = 0): Promise<like[]> {
         return await LikesModel.find({parentId: this.parentId})
-            .select('-__v -_id -parentId -status')
+            .select('-__v -_id -parentId -myStatus')
             .where({"myStatus": "Like"})
             .sort({addedAt: "descending"}).limit(limit).lean().exec()
     }
