@@ -51,13 +51,13 @@ export const bloggersRepo = {
 
         for (const post of postsData[1]) {
             let postLikes = user ? new Likes(post.id, {userId: user._id, login: user.userData.login}) : new Likes(post.id)
-            let myStatus = !user ? 'None' : await postLikes.getStatus()
+            const currentUserStatus = await postLikes.getStatus()
             newA.push({
                 ...post._doc,
                 extendedLikesInfo: {
                     likesCount: await postLikes.getLikesCount(),
                     dislikesCount: await postLikes.getDislikesCount(),
-                    "myStatus": myStatus,
+                    myStatus: currentUserStatus ? currentUserStatus.myStatus : 'None',
                     newestLikes: await postLikes.list(3)
                 }
             })
