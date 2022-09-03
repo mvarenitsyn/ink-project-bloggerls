@@ -67,7 +67,7 @@ commentsRoutes.put('/:commentId', isAuthorized, body('content').isLength({min:20
 
 })
 
-postsRouter.put('/:commentId/like-status', isAuthorized, isValidPost, body('likeStatus').isIn(['Like', 'Dislike', 'None']),
+postsRouter.put('/:commentId/like-status', isAuthorized, body('likeStatus').isIn(['Like', 'Dislike', 'None']),
     async (req: Request, res: Response) => {
         const {likeStatus} = req.body
         const errors = validationResult(req)
