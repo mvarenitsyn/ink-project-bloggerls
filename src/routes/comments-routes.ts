@@ -76,11 +76,12 @@ commentsRoutes.put('/:commentId/like-status', isAuthorized, body('likeStatus').i
             res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
             return
         }
-        if (req.currentUser) {
+        const comment = await commentsRepo.getCommentById(req.params.commentId, req.currentUser)
+        if(comment && req.currentUser) {
             await commentsRepo.setLike(req.params.commentId, likeStatus, req.currentUser)
             res.sendStatus(204)
             return
         }
-        res.sendStatus(401)
+        res.sendStatus(404)
         return
     })
