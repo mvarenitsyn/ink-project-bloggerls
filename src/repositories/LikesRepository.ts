@@ -55,7 +55,7 @@ export class Likes {
     }
 
     async getStatus(): Promise<like | null> {
-        return await LikesModel.findOne({parentId: this.parentId}).where({userId: this.userData?.userId}).lean().exec()
+        return await LikesModel.findOne({userId: this.userData?.userId}).where({parentId: this.parentId}).lean().exec()
     }
     async deleteAll(): Promise<any> {
         return await LikesModel.deleteMany({parentId: this.parentId}).lean().exec()
