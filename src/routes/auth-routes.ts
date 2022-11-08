@@ -103,7 +103,7 @@ authRoutes.post('/refresh-token', isValidRefreshToken,
         const refreshToken = await authRepo.createRefreshToken(userId)
         res.cookie('refreshToken', refreshToken,
             {
-                maxAge: 90000,
+                maxAge: 80000,
                 httpOnly: true,
                 secure: true
             }
