@@ -11,7 +11,7 @@ import {testing} from "./testing";
 export const bloggersPlatform = Router({})
 
 bloggersPlatform.use('/videos', videoRouter)
-bloggersPlatform.use('/bloggers', bloggersRouter)
+bloggersPlatform.use('/blogs', bloggersRouter)
 bloggersPlatform.use('/posts', postsRouter)
 bloggersPlatform.use('/users', usersRouter)
 bloggersPlatform.use('/auth', authRoutes)
