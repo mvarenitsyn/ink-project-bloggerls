@@ -132,3 +132,13 @@ authRoutes.get('/me', isAuthorized,
         "userId": user?._id
     })
 })
+
+authRoutes.post('/me', isAuthorized,
+    (req: Request, res: Response) => {
+        const user = req.currentUser
+        res.status(200).json({
+            "email": user?.userData.email,
+            "login": user?.userData.login,
+            "userId": user?._id
+        })
+    })
