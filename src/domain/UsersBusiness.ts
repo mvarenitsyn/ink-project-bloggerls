@@ -7,7 +7,7 @@ import add from "date-fns/add"
 export const usersRepo = {
     createUser: async (login: string, password: string, email:string) => {
         const hashedPassword = await userServices.hashPassword(password)
-        const result = await usersDBRepository.createUser({
+        const newUser = {
             _id: new ObjectId(),
             userData: {
                 login: login,
@@ -23,11 +23,14 @@ export const usersRepo = {
                 }),
                 isConfirmed: false
             }
-        })
+        }
+        const result = await usersDBRepository.createUser(newUser)
         if(result) {
             return {
                 "id": result.toString(),
-                "login": login
+                "login": login,
+                "email": newUser.userData.email,
+                "createdAt": newUser.userData.createdAt
             }
         } else return null
     },
