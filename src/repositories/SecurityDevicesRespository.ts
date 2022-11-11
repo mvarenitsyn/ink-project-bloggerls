@@ -20,6 +20,14 @@ export class SecurityDevicesRespository {
             return false
         }
     }
+
+    async checkDeviceId(deviceId: string) {
+        try {
+            return await RefreshTokenModel.findOne({deviceId: deviceId}).lean()
+        } catch (e) {
+            return false
+        }
+    }
     async deleteDeviceSession(deviceId: string) {
         try {
             const res = await RefreshTokenModel.deleteOne({deviceId: deviceId}).lean()
