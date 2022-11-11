@@ -10,7 +10,6 @@ const devices = new SecurityDevices()
 securityDevices.get('/devices', isValidRefreshToken,
      async (req: Request, res: Response) => {
         const deviceList = await devices.getUserDevices(req.cookies.refreshToken)
-         console.log(deviceList)
         if (deviceList) {
             res.status(200).json(deviceList)
             return
@@ -23,6 +22,7 @@ securityDevices.get('/devices', isValidRefreshToken,
 securityDevices.delete('/devices/',  isValidRefreshToken,
     async (req: Request, res: Response) => {
         const loggedOff = await devices.logOff(req.cookies.refreshToken)
+        console.log(loggedOff)
         loggedOff ? res.sendStatus(204) : res.sendStatus(401)
         return
     })

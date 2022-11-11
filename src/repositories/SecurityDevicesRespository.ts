@@ -8,7 +8,7 @@ export class SecurityDevicesRespository {
 
     async getUserDevices(userId: string) {
         try {
-            return await RefreshTokenModel.find({user: userId}).lean()
+            return await RefreshTokenModel.find({user: userId, valid: true}).lean()
         } catch (e) {
             return false
         }
