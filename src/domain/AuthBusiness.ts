@@ -7,6 +7,7 @@ import {v4 as uuidv4} from "uuid"
 import {refreshToken} from "../db/types";
 import {ObjectId} from "mongodb";
 import add from "date-fns/add";
+import compareAsc from "date-fns/compareAsc";
 import {tokensRepository} from "../repositories/TokensRepository";
 
 const secret = process.env.JWT_SECRET
@@ -21,7 +22,7 @@ export const authRepo = {
         return {loggedIn: false, userId: ''}
     },
     createJWT: (id: string) => {
-        return jwt.sign({id: id}, secret as Secret, {expiresIn: '10s'})
+        return jwt.sign({id: id}, secret as Secret, {expiresIn: '300s'})
     },
     getUserIdByToken: (token: string) => {
         interface JwtPayload {
@@ -55,17 +56,23 @@ export const authRepo = {
 
     },
 
-    createRefreshToken: async(userId: string, timeout:number = 20000) => {
+    createRefreshToken: async(userId: string, timeout:number = 120000, deviceName:string = 'None', ip:string = '') => {
         try {
-            const tokenId = jwt.sign({id: userId}, secret as Secret, {expiresIn: timeout})
+            const now = new Date()
+            const deviceId = uuidv4()
+            const tokenId = jwt.sign({id: userId, deviceId: deviceId, issuedAt: now}, secret as Secret, {expiresIn: timeout})
             const newToken:refreshToken = {
                 _id: new ObjectId(),
                 token: tokenId,
                 valid: true,
-                validUntil: add(new Date(), {
-                    seconds: 20
+                deviceId: deviceId,
+                issuedAt: now,
+                deviceName: deviceName,
+                validUntil: add(now, {
+                    seconds: 20000
                 }),
-                user: userId
+                user: userId,
+                ip: ip
             }
             await tokensRepository.createToken(newToken)
             return tokenId
@@ -78,13 +85,18 @@ export const authRepo = {
     refreshToken: async(tokenId: string) => {
       try {
           interface JwtPayload {
-              id: string
+              id: string,
+              deviceId: string,
+              issuedAt: string,
           }
-          const {id} = jwt.verify(tokenId, secret as Secret) as JwtPayload
-          const token = await tokensRepository.getTokenData(tokenId)
-          if(id && token && token && token.validUntil > new Date() && token.valid) {
-              await tokensRepository.deactivateToken(tokenId)
-              return id
+          const {id, deviceId, issuedAt} = jwt.verify(tokenId, secret as Secret) as JwtPayload
+
+          const token = await tokensRepository.getTokenDataByDevice(deviceId)
+
+
+          if(id && token && token && token.validUntil > new Date() && token.valid && compareAsc(token!.issuedAt, new Date(issuedAt))===0) {
+              const updatedTime = await tokensRepository.updateToken(deviceId)
+              return jwt.sign({id: id, deviceId: deviceId, issuedAt: updatedTime}, secret as Secret, {expiresIn: 900000})
           } else {
               return false
           }
@@ -92,6 +104,26 @@ export const authRepo = {
       } catch (e) {
           return false
       }
+    },
+
+    checkRefreshToken: async(tokenId: string) => {
+        try {
+            interface JwtPayload {
+                id: string,
+                deviceId: string,
+                issuedAt: string,
+            }
+            const {id, deviceId} = jwt.verify(tokenId, secret as Secret) as JwtPayload
+            const token = await tokensRepository.getTokenDataByDevice(deviceId)
+            if(id && token && token && token.validUntil > new Date() && token.valid) {
+                return id
+            } else {
+                return false
+            }
+
+        } catch (e) {
+            return false
+        }
     },
 
     deactivateToken: async (tokenId: string) => {

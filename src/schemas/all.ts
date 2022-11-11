@@ -55,10 +55,14 @@ export const postSchema = new Schema<postInterface>(
 export const refreshTokenSchema = new Schema<refreshToken>(
     {
         _id: ObjectId,
+        deviceId: String,
+        issuedAt: Date,
+        deviceName: String,
         token: String,
         validUntil: Date,
         valid: Boolean,
-        user: String
+        user: String,
+        ip: String
     }
 )
 

@@ -12,6 +12,7 @@ authRoutes.post('/login', isNotSpam('login', 10, 5),
     body('login').exists().isString(),
     body('password').exists().isString(),
     async (req: Request, res: Response) => {
+
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
@@ -21,12 +22,13 @@ authRoutes.post('/login', isNotSpam('login', 10, 5),
         const {login, password} = req.body
         const {loggedIn, userId} = await authRepo.checkUserCredentials(login, password)
         if (loggedIn) {
-            const refreshToken = await authRepo.createRefreshToken(userId)
+
+            const refreshToken = await authRepo.createRefreshToken(userId, 120000, req.get('user-agent'), req.ip)
             res.cookie('refreshToken', refreshToken,
                 {
-                    maxAge: 90000,
+                    maxAge: 900000,
                     httpOnly: true,
-                    secure: true
+                    secure: false
                 }
                 )
             .status(200)
@@ -100,12 +102,12 @@ authRoutes.post('/registration-email-resending', isNotSpam('resend', 10, 5), bod
 authRoutes.post('/refresh-token', isValidRefreshToken,
     async (req: Request, res: Response) => {
         const userId = req.currentUser!._id.toString()
-        const refreshToken = await authRepo.createRefreshToken(userId)
+        const refreshToken = await authRepo.refreshToken(req.cookies.refreshToken)
         res.cookie('refreshToken', refreshToken,
             {
-                maxAge: 80000,
+                maxAge: 800000,
                 httpOnly: true,
-                secure: true
+                secure: false
             }
         )
             .status(200)

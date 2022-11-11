@@ -51,9 +51,13 @@ export type logDBtype = {
 export type refreshToken = {
     _id: ObjectId,
     token: string,
+    deviceId: string,
+    issuedAt: Date,
+    deviceName: string,
     validUntil: Date,
     valid: boolean,
-    user: string
+    user: string,
+    ip: string
 }
 
 export type like = {

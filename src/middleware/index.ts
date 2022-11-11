@@ -9,6 +9,7 @@ import {LoggingRepository} from "../repositories/LoggingRepository";
 
 import sub from "date-fns/sub"
 import {userServices} from "../domain/UserServices";
+import jwt, {Secret} from "jsonwebtoken";
 
 export const isValidBlogger = async (req: Request, res: Response, next: NextFunction) => {
     const bloggerId = req.params.bloggerId || req.params.id || null
@@ -82,13 +83,31 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
 
 export const isValidRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies.refreshToken
-    const userId = refreshToken ? await authRepo.refreshToken(refreshToken) : false
+    const userId = refreshToken ? await authRepo.checkRefreshToken(refreshToken) : false
     if(userId) {
         req.currentUser = await usersRepo.getUserById(userId)
         next()
         return
     }
     res.sendStatus(401)
+    return
+}
+
+export const isValidDeviceId = async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.refreshToken
+    interface JwtPayload {
+        id: string,
+        deviceId: string,
+        issuedAt: string,
+    }
+    const secret = process.env.JWT_SECRET
+    const {id, deviceId} = jwt.verify(refreshToken, secret as Secret) as JwtPayload
+
+    if(deviceId === req.params.id) {
+        next()
+        return
+    }
+    res.sendStatus(403)
     return
 }
 
