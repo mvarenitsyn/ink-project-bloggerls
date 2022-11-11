@@ -20,10 +20,11 @@ export class SecurityDevices {
             if(id && sessions) {
                 return sessions.map(session => {
                    return {
+                       deviceId: session.deviceId,
                        ip: session.ip,
+                       lastActiveDate: session.issuedAt,
                        title: session.deviceName,
-                       lastActivatedDate: session.issuedAt,
-                       deviceId: session.deviceId
+
                    }
                 })
             } else {
