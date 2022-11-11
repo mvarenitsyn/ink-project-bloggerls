@@ -7,7 +7,7 @@ export const securityDevices = Router({})
 
 const devices = new SecurityDevices()
 
-securityDevices.get('/devices', isAuthorized,
+securityDevices.get('/devices', isValidRefreshToken,
      async (req: Request, res: Response) => {
         const deviceList = await devices.getUserDevices(req.cookies.refreshToken)
          console.log(deviceList)
@@ -25,7 +25,7 @@ securityDevices.delete('/devices/', isAuthorized, isValidRefreshToken,
         return
     })
 
-securityDevices.delete('/devices/:id', isValidRefreshToken,
+securityDevices.delete('/devices/:id', isAuthorized, isValidRefreshToken,
     async (req: Request, res: Response) => {
         const loggedOff = await devices.logOff(req.cookies.refreshToken, req.params.id)
         if(await devices.checkUserDevices(req.cookies.refreshToken, req.params.id)) {
