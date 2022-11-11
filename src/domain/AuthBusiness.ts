@@ -22,7 +22,7 @@ export const authRepo = {
         return {loggedIn: false, userId: ''}
     },
     createJWT: (id: string) => {
-        return jwt.sign({id: id}, secret as Secret, {expiresIn: '300s'})
+        return jwt.sign({id: id}, secret as Secret, {expiresIn: '10s'})
     },
     getUserIdByToken: (token: string) => {
         interface JwtPayload {
@@ -56,7 +56,7 @@ export const authRepo = {
 
     },
 
-    createRefreshToken: async(userId: string, timeout:number = 120000, deviceName:string = 'None', ip:string = '') => {
+    createRefreshToken: async(userId: string, timeout:number = 20, deviceName:string = 'None', ip:string = '') => {
         try {
             const now = new Date()
             const deviceId = uuidv4()
@@ -69,7 +69,7 @@ export const authRepo = {
                 issuedAt: now,
                 deviceName: deviceName,
                 validUntil: add(now, {
-                    seconds: 20000
+                    seconds: timeout
                 }),
                 user: userId,
                 ip: ip

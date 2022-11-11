@@ -23,12 +23,12 @@ authRoutes.post('/login', isNotSpam('login', 10, 5),
         const {loggedIn, userId} = await authRepo.checkUserCredentials(login, password)
         if (loggedIn) {
 
-            const refreshToken = await authRepo.createRefreshToken(userId, 120000, req.get('user-agent'), req.ip)
+            const refreshToken = await authRepo.createRefreshToken(userId, 20, req.get('user-agent'), req.ip)
             res.cookie('refreshToken', refreshToken,
                 {
-                    maxAge: 900000,
+                    maxAge: 20000,
                     httpOnly: true,
-                    secure: false
+                    secure: true
                 }
                 )
             .status(200)
@@ -105,9 +105,9 @@ authRoutes.post('/refresh-token', isValidRefreshToken,
         const refreshToken = await authRepo.refreshToken(req.cookies.refreshToken)
         res.cookie('refreshToken', refreshToken,
             {
-                maxAge: 800000,
+                maxAge: 20000,
                 httpOnly: true,
-                secure: false
+                secure: true
             }
         )
             .status(200)
