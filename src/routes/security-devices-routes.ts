@@ -18,7 +18,7 @@ securityDevices.get('/devices', isValidRefreshToken,
         return
     })
 
-securityDevices.delete('/devices/', isAuthorized, isValidRefreshToken,
+securityDevices.delete('/devices/',  isValidRefreshToken,
     async (req: Request, res: Response) => {
         const loggedOff = await devices.logOff(req.cookies.refreshToken)
         loggedOff ? res.sendStatus(204) : res.sendStatus(401)
@@ -32,7 +32,7 @@ securityDevices.delete('/devices/:id', isValidRefreshToken,
         if(await devices.checkUserDevices(req.cookies.refreshToken, req.params.id)) {
             loggedOff ? res.sendStatus(204) : res.sendStatus(404)
         } else {
-            res.sendStatus(404)
+            res.sendStatus(403)
         }
     } else {
         res.sendStatus(404)
