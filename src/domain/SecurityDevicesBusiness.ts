@@ -46,6 +46,7 @@ export class SecurityDevices {
             const {id} = jwt.verify(token, secret as Secret) as JwtPayload
 
             const isBelong = await this.sessionsData.checkUserDeviceId(id, checkId)
+            console.log(isBelong)
             if(isBelong) {
                 return true
             } else {

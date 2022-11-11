@@ -22,7 +22,7 @@ export const authRepo = {
         return {loggedIn: false, userId: ''}
     },
     createJWT: (id: string) => {
-        return jwt.sign({id: id}, secret as Secret, {expiresIn: '10s'})
+        return jwt.sign({id: id}, secret as Secret, {expiresIn: '100s'})
     },
     getUserIdByToken: (token: string) => {
         interface JwtPayload {
@@ -60,7 +60,7 @@ export const authRepo = {
         try {
             const now = new Date()
             const deviceId = uuidv4()
-            const tokenId = jwt.sign({id: userId, deviceId: deviceId, issuedAt: now}, secret as Secret, {expiresIn: timeout})
+            const tokenId = jwt.sign({id: userId, deviceId: deviceId, issuedAt: now}, secret as Secret, {expiresIn: 20000})
             const newToken:refreshToken = {
                 _id: new ObjectId(),
                 token: tokenId,

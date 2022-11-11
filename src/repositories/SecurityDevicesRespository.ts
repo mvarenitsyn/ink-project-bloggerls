@@ -15,7 +15,7 @@ export class SecurityDevicesRespository {
     }
     async checkUserDeviceId(userId: string, deviceId: string) {
         try {
-            return await RefreshTokenModel.find({user: userId, deviceId: deviceId}).lean()
+            return await RefreshTokenModel.findOne({user: userId, deviceId: deviceId}).lean()
         } catch (e) {
             return false
         }
