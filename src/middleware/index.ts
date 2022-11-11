@@ -94,6 +94,7 @@ export const isValidRefreshToken = async (req: Request, res: Response, next: Nex
 }
 
 export const isValidDeviceId = async (req: Request, res: Response, next: NextFunction) => {
+
     const refreshToken = req.cookies.refreshToken
     interface JwtPayload {
         id: string,
