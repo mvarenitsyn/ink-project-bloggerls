@@ -25,7 +25,7 @@ securityDevices.delete('/devices/', isAuthorized, isValidRefreshToken,
         return
     })
 
-securityDevices.delete('/devices/:id', isAuthorized, isValidRefreshToken,
+securityDevices.delete('/devices/:id', isValidRefreshToken,
     async (req: Request, res: Response) => {
         const loggedOff = await devices.logOff(req.cookies.refreshToken, req.params.id)
         if(await devices.checkUserDevices(req.cookies.refreshToken, req.params.id)) {
