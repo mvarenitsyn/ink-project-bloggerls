@@ -140,8 +140,8 @@ authRoutes.post('/password-recovery', body('email').normalizeEmail().isEmail(), 
 
     })
 
-authRoutes.post('/new-password', isNotSpam('confirm', 10, 5),
-    body('newPassword').exists().isString(),
+authRoutes.post('/new-password', isNotSpam('recover', 10, 5),
+    body('newPassword').exists().isString().isLength({min: 6, max: 20}),
     body('recoveryCode').exists().isString(),
 
     async (req: Request, res: Response) => {
@@ -153,9 +153,10 @@ authRoutes.post('/new-password', isNotSpam('confirm', 10, 5),
         if(await usersRepo.setNewPassword(req.body.newPassword, req.body.recoveryCode)) {
             res.sendStatus(204)
             return
-        }
+        } else {
         res.sendStatus(400)
         return
+        }
 
     })
 

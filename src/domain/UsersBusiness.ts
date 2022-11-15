@@ -39,7 +39,7 @@ export const usersRepo = {
     sendRecovery: async(email: string) => {
       try {
         if(await usersDBRepository.checkUserEmail(email)) {
-          const code = usersRepo.updateUserConfirmationCode(email)
+          const code = await usersRepo.updateUserConfirmationCode(email)
           const confirmEmail = await MailService.sendEmail(email,
               `https://ink-project-bloggerls.herokuapp.com/auth/password-recovery?recoveryCode=${code}`)
           if (confirmEmail === '250') {
