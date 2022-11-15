@@ -10,6 +10,7 @@ import {LoggingRepository} from "../repositories/LoggingRepository";
 import sub from "date-fns/sub"
 import {userServices} from "../domain/UserServices";
 import jwt, {Secret} from "jsonwebtoken";
+import {usersDBRepository} from "../repositories/UsersRepository";
 
 export const isValidBlogger = async (req: Request, res: Response, next: NextFunction) => {
     const bloggerId = req.params.bloggerId || req.params.id || null
@@ -133,6 +134,19 @@ export const isNotSpam = (action:string, time: number = 10, limit: number = 5) =
         const logs = userServices.getRequests(action, req.ip, sub(new Date(), {seconds: time}))
         if(!logs || logs.length<limit) {
             userServices.logRequest(action, req.ip, new Date())
+            next()
+            return
+        } else {
+            res.sendStatus(429)
+            return
+        }
+    }
+}
+
+export const isValidConfirmationCode = (code:string) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
+        const logs = await usersDBRepository.checkConfirmationCode(code)
+        if (logs) {
             next()
             return
         } else {
