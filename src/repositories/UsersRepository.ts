@@ -44,11 +44,17 @@ export const usersDBRepository = {
     checkConfirmationCode: async (code:string) => {
         return UserModel.findOne({"emailConfirmation.confirmationCode": code});
     },
+    checkEmailConfirmationCode: async (email:string, code:string) => {
+        return UserModel.findOne({"emailConfirmation.confirmationCode": code, "userData.email": email});
+    },
     confirmUser: async (code:string) => {
         return UserModel.updateOne({"emailConfirmation.confirmationCode": code}, {$set: {"emailConfirmation.isConfirmed": true}});
     },
     updateConfirmationCode: async (email: string, code: string) => {
         return UserModel.updateOne({"userData.email": email}, {$set: {"emailConfirmation.confirmationCode": code}});
+    },
+    updateUserPassword: async (code: string, newPassword: string) => {
+        return UserModel.updateOne({"emailConfirmation.confirmationCode": code}, {$set: {"userData.password": newPassword}});
     }
 
 }

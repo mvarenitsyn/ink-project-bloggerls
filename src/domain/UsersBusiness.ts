@@ -3,6 +3,7 @@ import {userServices} from "./UserServices";
 import {usersDBRepository} from "../repositories/UsersRepository";
 import {v4 as uuidv4} from "uuid"
 import add from "date-fns/add"
+import {MailService} from "./MailService";
 
 export const usersRepo = {
     createUser: async (login: string, password: string, email:string) => {
@@ -33,6 +34,35 @@ export const usersRepo = {
                 "createdAt": newUser.userData.createdAt
             }
         } else return null
+    },
+
+    sendRecovery: async(email: string) => {
+      try {
+        if(await usersDBRepository.checkUserEmail(email)) {
+          const code = usersRepo.updateUserConfirmationCode(email)
+          const confirmEmail = await MailService.sendEmail(email,
+              `https://ink-project-bloggerls.herokuapp.com/auth/password-recovery?recoveryCode=${code}`)
+          if (confirmEmail === '250') {
+              return '204'
+          } else return undefined
+      } else return undefined
+      } catch (e) {
+          return undefined
+      }
+    },
+
+    setNewPassword: async(password: string, code: string) => {
+       try{
+           if(await usersDBRepository.checkConfirmationCode(code)) {
+               const hashedPassword = await userServices.hashPassword(password)
+               await usersDBRepository.updateUserPassword(code, hashedPassword)
+               return true
+           } else {
+               return false
+           }
+       } catch (e) {
+           return false
+       }
     },
 
     getUsers: async (pageNumber: number = 1, pageSize: number = 10) => {

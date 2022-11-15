@@ -4,6 +4,7 @@ import {body, cookie, validationResult} from "express-validator";
 import {errorsAdapt} from "../utils";
 import {isAuthorized, isNotSpam, isValidRefreshToken} from "../middleware";
 import {usersDBRepository} from "../repositories/UsersRepository";
+import {usersRepo} from "../domain/UsersBusiness";
 
 
 export const authRoutes = Router({})
@@ -121,6 +122,39 @@ authRoutes.post('/logout', isValidRefreshToken,
     async (req: Request, res: Response) => {
         await authRepo.deactivateToken(req.cookies.refreshToken)
         res.sendStatus(204)
+        return
+
+    })
+
+authRoutes.post('/password-recovery', body('email').normalizeEmail().isEmail(), isNotSpam('confirm', 10, 5),
+
+    async (req: Request, res: Response) => {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
+            return
+        }
+        await usersRepo.sendRecovery(req.body.email)
+        res.sendStatus(204)
+        return
+
+    })
+
+authRoutes.post('/new-password', isNotSpam('confirm', 10, 5),
+    body('newPassword').exists().isString(),
+    body('recoveryCode').exists().isString(),
+
+    async (req: Request, res: Response) => {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
+            return
+        }
+        if(await usersRepo.setNewPassword(req.body.newPassword, req.body.recoveryCode)) {
+            res.sendStatus(204)
+            return
+        }
+        res.sendStatus(400)
         return
 
     })
