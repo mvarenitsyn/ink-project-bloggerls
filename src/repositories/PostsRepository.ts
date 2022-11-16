@@ -16,7 +16,7 @@ export const postsRepo = {
 
     getPostById: async (id: string) => {
         const filter = {id: id}
-        return PostModel.findOne(filter).select('-_id -__v -blogId').lean().exec()
+        return PostModel.findOne(filter).select('-_id -__v -blogId -blogName').lean().exec()
     },
 
     deletePostById: async (id: string) => {
