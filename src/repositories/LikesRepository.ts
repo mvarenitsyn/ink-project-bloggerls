@@ -12,7 +12,7 @@ export class Likes {
         return await LikesModel.find({parentId: this.parentId})
             .select('-__v -_id -parentId -myStatus')
             .where({"myStatus": "Like"})
-            .sort({createdAt: "descending"}).limit(limit).lean().exec()
+            .sort({createdAt: "ascending"}).limit(limit).lean().exec()
     }
 
 
