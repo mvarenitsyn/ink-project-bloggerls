@@ -41,6 +41,7 @@ export const commentsRepository = {
     getCommentsByPostId: async (postId: string, pageNum: number, pageSize: number) => {
         const comments =  await CommentModel.find({postId: postId})
             .skip((pageNum - 1) * pageSize)
+            .sort({createdAt: "descending"})
             .limit(pageSize)
             .lean()
         return comments.map(comment => {
