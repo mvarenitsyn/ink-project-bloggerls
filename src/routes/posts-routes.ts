@@ -60,20 +60,20 @@ postsRouter.post('/', isAuthorized,
     body('title').trim().notEmpty().isLength({max: 30}),
     body('shortDescription').trim().notEmpty().isLength({max: 100}),
     body('content').trim().notEmpty().isLength({max: 1000}),
-    body('bloggerId').custom(async value => {
+    body('blogId').custom(async value => {
         if (!await bloggersRepo.getBloggerById(value)) {
             return Promise.reject();
         }
     }),
     async (req: Request, res: Response) => {
-        const {title, shortDescription, content, bloggerId} = req.body
+        const {title, shortDescription, content, blogId} = req.body
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             res.status(400).json({"errorsMessages": errorsAdapt(errors.array({onlyFirstError: true}))})
             return
         }
 
-        res.status(201).send(await postsBusiness.createPost(title, shortDescription, content, bloggerId))
+        res.status(201).send(await postsBusiness.createPost(title, shortDescription, content, blogId))
         return
 
 
