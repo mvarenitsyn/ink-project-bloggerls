@@ -12,7 +12,7 @@ export class Likes {
         return await LikesModel.find({parentId: this.parentId})
             .select('-__v -_id -parentId -myStatus')
             .where({"myStatus": "Like"})
-            .sort({addedAt: "descending"}).limit(limit).lean().exec()
+            .sort({createdAt: "descending"}).limit(limit).lean().exec()
     }
 
 
@@ -20,7 +20,7 @@ export class Likes {
     async like(): Promise<boolean> {
         const query = await LikesModel.updateOne({$and: [{parentId: this.parentId}, {userId: this.userData?.userId}]}, {
             myStatus: 'Like',
-            addedAt: new Date(),
+            createdAt: new Date(),
             userId: this.userData?.userId,
             login: this.userData?.login,
             parentId: this.parentId
@@ -34,7 +34,7 @@ export class Likes {
     async reset(): Promise<boolean> {
         const query = await LikesModel.updateOne({$and: [{parentId: this.parentId}, {userId: this.userData?.userId}]}, {
             myStatus: 'None',
-            addedAt: new Date(),
+            createdAt: new Date(),
             userId: this.userData?.userId,
             login: this.userData?.login,
             parentId: this.parentId
@@ -46,7 +46,7 @@ export class Likes {
 
         const query = await LikesModel.updateOne({$and: [{parentId: this.parentId}, {userId: this.userData?.userId}]}, {
             myStatus: 'Dislike',
-            addedAt: new Date(),
+            createdAt: new Date(),
             userId: this.userData?.userId,
             login: this.userData?.login,
             parentId: this.parentId
@@ -81,7 +81,7 @@ export class LikesRepository {
         return await LikesModel.find({"parentId": parentId})
             .select('-__v -_id -parentId -status')
             .or([{"status": "Like"}, {"status": "Dislike"}])
-            .sort({addedAt: "descending"}).limit(limit).lean().exec()
+            .sort({createdAt: "descending"}).limit(limit).lean().exec()
     }
 
 
@@ -89,7 +89,7 @@ export class LikesRepository {
     async like(userId: string, login: string, parentId: string): Promise<boolean> {
         const query = await LikesModel.updateOne({$and: [{parentId: parentId}, {userId: userId}]}, {
             status: 'Like',
-            addedAt: new Date(),
+            createdAt: new Date(),
             userId: userId,
             login: login,
             parentId: parentId
@@ -103,7 +103,7 @@ export class LikesRepository {
     async reset(userId: string, login: string, parentId: string): Promise<boolean> {
         const query = await LikesModel.updateOne({$and: [{parentId: parentId}, {userId: userId}]}, {
             status: 'None',
-            addedAt: new Date(),
+            createdAt: new Date(),
             userId: userId,
             login: login,
             parentId: parentId
@@ -114,7 +114,7 @@ export class LikesRepository {
     async dislike(userId: string, login: string, parentId: string): Promise<boolean> {
         const query = await LikesModel.updateOne({$and: [{parentId: parentId}, {userId: userId}]}, {
             status: 'Dislike',
-            addedAt: new Date(),
+            createdAt: new Date(),
             userId: userId,
             login: login,
             parentId: parentId

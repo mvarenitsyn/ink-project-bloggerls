@@ -23,7 +23,7 @@ export const commentsRepository = {
                         "content":1,
                         "userId":1,
                         "userLogin":1,
-                        "addedAt": 1
+                        "createdAt": 1
                     }
             },
         ])
@@ -49,7 +49,7 @@ export const commentsRepository = {
                 content: comment.content,
                 userId: comment.userId,
                 userLogin: comment.userLogin,
-                addedAt: comment.createdAt
+                createdAt: comment.createdAt
             }
         })
     },
