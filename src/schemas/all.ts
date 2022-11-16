@@ -69,7 +69,7 @@ export const refreshTokenSchema = new Schema<refreshToken>(
 export const LikeSchema = new Schema<like>(
     {
         _id: ObjectId,
-        createdAt: Date,
+        addedAt: Date,
         userId: String,
         login: String,
         myStatus: String,

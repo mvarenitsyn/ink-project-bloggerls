@@ -93,7 +93,7 @@ export const postsBusiness = {
             newestLikes: newestLikes.map(like => {
                 console.log(like)
                 return {
-                    "addedAt": like.createdAt,
+                    "addedAt": like.addedAt,
                     "userId": like.userId,
                     "login": like.login
                 }
