@@ -62,7 +62,7 @@ export type refreshToken = {
 
 export type like = {
     _id: ObjectId,
-    addedAt: Date,
+    createdAt: Date,
     userId: string,
     login: string,
     myStatus: string,

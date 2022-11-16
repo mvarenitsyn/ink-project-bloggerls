@@ -91,8 +91,9 @@ export const postsBusiness = {
             dislikesCount: await postLikes.getDislikesCount(),
             myStatus: currentUserStatus ? currentUserStatus.myStatus : 'None',
             newestLikes: newestLikes.map(like => {
+                console.log(like)
                 return {
-                    "addedAt": like.addedAt,
+                    "addedAt": like.createdAt,
                     "userId": like.userId,
                     "login": like.login
                 }
