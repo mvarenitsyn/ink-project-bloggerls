@@ -13,7 +13,7 @@ import jwt, {Secret} from "jsonwebtoken";
 import {usersDBRepository} from "../repositories/UsersRepository";
 
 export const isValidBlogger = async (req: Request, res: Response, next: NextFunction) => {
-    const bloggerId = req.params.bloggerId || req.params.id || null
+    const bloggerId = req.params.blogId || req.params.id || null
     if (bloggerId && !await bloggersDBRepository.getBloggerById(bloggerId)) {
         res.sendStatus(404)
         return

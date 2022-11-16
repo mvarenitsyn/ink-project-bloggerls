@@ -47,8 +47,8 @@ export const postSchema = new Schema<postInterface>(
         title: String,
         shortDescription: String,
         content: String,
-        bloggerId: String,
-        bloggerName: String,
+        blogId: String,
+        blogName: String,
     }
 )
 

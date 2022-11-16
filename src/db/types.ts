@@ -37,8 +37,8 @@ export interface postInterface extends WithId<Document>{
     "title": string,
     "shortDescription": string,
     "content": string,
-    "bloggerId": string,
-    "bloggerName": string
+    "blogId": string,
+    "blogName": string
 }
 
 export type logDBtype = {

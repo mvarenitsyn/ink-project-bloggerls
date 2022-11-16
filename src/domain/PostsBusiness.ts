@@ -52,9 +52,9 @@ export const postsBusiness = {
             "title": title,
             "shortDescription": shortDescription,
             "content": content,
-            "bloggerId": bloggerId.toString(),
+            "blogId": bloggerId.toString(),
             "createdAt": new Date(),
-            "bloggerName" : blogger?.name || ''
+            "blogName" : blogger?.name || ''
         }
         const createdPost = await postsRepo.createPost(newPost)
         if(createdPost)

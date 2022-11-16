@@ -80,8 +80,8 @@ export const bloggersRepo = {
             "title": title,
             "shortDescription": shortDescription,
             "content": content,
-            "bloggerId": bloggerId,
-            "bloggerName" : blogger!.name
+            "blogId": bloggerId,
+            "blogName" : blogger!.name
         }
         const createdPost = await postsRepo.createPost(newPost)
         return {

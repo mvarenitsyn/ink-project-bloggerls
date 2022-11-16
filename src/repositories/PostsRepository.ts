@@ -4,7 +4,7 @@ import {postInterface, userDBtype} from "../db/types";
 export const postsRepo = {
 
     getPosts: async (pageNum: number, pageSize: number, bloggerId?: string):Promise<[number, postInterface[]]> => {
-        const filter = bloggerId ? {bloggerId: bloggerId} : {}
+        const filter = bloggerId ? {blogId: bloggerId} : {}
 
         const resultCount = await PostModel.countDocuments(filter)
         const posts = await PostModel.find(filter).select('-_id -__v')
@@ -30,8 +30,8 @@ export const postsRepo = {
             title: title,
             shortDescription: shortDescription,
             content: content,
-            bloggerId: bloggerId,
-            bloggerName: bloggerName
+            blogId: bloggerId,
+            blogName: bloggerName
         })
         return
     },
@@ -47,8 +47,8 @@ export const postsRepo = {
                 "title": post.title,
                 "shortDescription": post.shortDescription,
                 "content": post.content,
-                "bloggerId": post.bloggerId,
-                "bloggerName": post.bloggerName
+                "blogId": post.bloggerId,
+                "blogName": post.bloggerName
             }
         }).catch(err => {
             return {}
