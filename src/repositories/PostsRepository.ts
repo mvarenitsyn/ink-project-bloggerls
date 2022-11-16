@@ -7,7 +7,7 @@ export const postsRepo = {
         const filter = bloggerId ? {blogId: bloggerId} : {}
 
         const resultCount = await PostModel.countDocuments(filter)
-        const posts = await PostModel.find(filter).select('-_id -__v')
+        const posts = await PostModel.find(filter).select('-_id -__v').sort({createdAt: "descending"})
             .skip((pageNum - 1) * pageSize)
             .limit(pageSize)
             .exec()
