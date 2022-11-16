@@ -53,7 +53,7 @@ export const postsBusiness = {
             "shortDescription": shortDescription,
             "content": content,
             "blogId": bloggerId.toString(),
-            "addedAt": new Date(),
+            "createdAt": new Date(),
             "blogName" : blogger?.name || ''
         }
         const createdPost = await postsRepo.createPost(newPost)

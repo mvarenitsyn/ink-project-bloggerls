@@ -33,7 +33,7 @@ export type userDBtype = {
 export interface postInterface extends WithId<Document>{
     "_id": ObjectId,
     "id": string,
-    "addedAt": Date,
+    "createdAt": Date,
     "title": string,
     "shortDescription": string,
     "content": string,
