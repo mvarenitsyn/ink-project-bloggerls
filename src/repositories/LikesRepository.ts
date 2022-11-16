@@ -81,7 +81,7 @@ export class LikesRepository {
         return await LikesModel.find({"parentId": parentId})
             .select('-__v -_id -parentId -status')
             .or([{"status": "Like"}, {"status": "Dislike"}])
-            .sort({createdAt: "descending"}).limit(limit).lean().exec()
+            .sort({createdAt: "ascending"}).limit(limit).lean().exec()
     }
 
 
