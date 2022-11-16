@@ -43,7 +43,7 @@ export const postsRepo = {
         return await newPost.save().then(result => {
             return {
                 "id": post.id,
-                "addedAt": post.addedAt,
+                "createdAt": post.createdAt,
                 "title": post.title,
                 "shortDescription": post.shortDescription,
                 "content": post.content,

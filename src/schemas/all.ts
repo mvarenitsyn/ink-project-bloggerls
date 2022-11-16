@@ -34,7 +34,7 @@ export const commentSchema = new Schema<commentDBType>(
         content: String,
         userId: String,
         userLogin: String,
-        addedAt: Date,
+        createdAt: Date,
         postId: String
     }
 )
@@ -43,7 +43,7 @@ export const postSchema = new Schema<postInterface>(
     {
         _id: ObjectId,
         id: String,
-        addedAt: Date,
+        createdAt: Date,
         title: String,
         shortDescription: String,
         content: String,

@@ -10,7 +10,7 @@ export const commentsRepo = {
             content: content,
             userId: user._id.toString(),
             userLogin: user.userData.login,
-            addedAt: new Date(),
+            createdAt: new Date(),
             postId: postId
         }
         const result = await commentsRepository.createComment(newComment)
@@ -20,7 +20,7 @@ export const commentsRepo = {
                 content: newComment.content,
                 userId: newComment.userId,
                 userLogin: newComment.userLogin,
-                addedAt: newComment.addedAt,
+                createdAt: newComment.createdAt,
                 likesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,

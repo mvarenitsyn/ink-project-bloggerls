@@ -11,7 +11,7 @@ export type commentDBType = {
     "content": string,
     "userId": string,
     "userLogin": string,
-    "addedAt": Date,
+    "createdAt": Date,
     "postId": string,
 }
 
@@ -33,7 +33,7 @@ export type userDBtype = {
 export interface postInterface extends WithId<Document>{
     "_id": ObjectId,
     "id": string,
-    "addedAt": Date,
+    "createdAt": Date,
     "title": string,
     "shortDescription": string,
     "content": string,
