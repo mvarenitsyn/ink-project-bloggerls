@@ -57,6 +57,7 @@ export const postsBusiness = {
             "blogName" : blogger?.name || ''
         }
         const createdPost = await postsRepo.createPost(newPost)
+
         if(createdPost)
         return {
             ...createdPost,

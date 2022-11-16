@@ -47,8 +47,8 @@ export const postsRepo = {
                 "title": post.title,
                 "shortDescription": post.shortDescription,
                 "content": post.content,
-                "blogId": post.bloggerId,
-                "blogName": post.bloggerName
+                "blogId": post.blogId,
+                "blogName": post.blogId
             }
         }).catch(err => {
             return {}
