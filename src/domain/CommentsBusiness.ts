@@ -20,7 +20,7 @@ export const commentsRepo = {
                 content: newComment.content,
                 userId: newComment.userId,
                 userLogin: newComment.userLogin,
-                createdAt: newComment.addedAt,
+                addedAt: newComment.addedAt,
                 likesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,
